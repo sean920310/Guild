@@ -129,6 +129,42 @@ end
 
 --------------------------------------------------------------------------------------
 
+ESX.RegisterServerCallback("Guild:new",function(source,cb,name,comment)
+    local error = Guild:new(name,comment)
+    if error then
+        cb(error)
+    else
+        cb(false)
+    end
+end)
+
+ESX.RegisterServerCallback("Guild:join",function(source,cb,name)
+    local error = Guild:join(source,name)
+    if error then
+        cb(error)
+    else
+        cb(false)
+    end
+end)
+
+ESX.RegisterServerCallback("Guild:leave",function(source,cb,name)
+    local error = Guild:leave(source,name)
+    if error then
+        cb(error)
+    else
+        cb(false)
+    end
+end)
+
+ESX.RegisterServerCallback("Guild:modify",function(source,cb,name,data)
+    local error = Guild:modify(name,data)
+    if error then
+        cb(error)
+    else
+        cb(false)
+    end
+end)
+
 --------------------------------------------------------------------------------------
 
 CreateThread(function()
