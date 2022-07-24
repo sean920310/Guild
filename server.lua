@@ -1,5 +1,6 @@
 local MySQLReady = false
 local Guild = {}
+Guild.list={}
 
 ESX = nil
 TriggerEvent('esx:getSharedObject', function(obj)
@@ -15,29 +16,27 @@ function Guild:init()
         Wait(5)
     end
 
-    MySQL.Async.fetchAll('SELECT * FROM `guilds`', function(collect)
-        if collect then
+    MySQL.Async.fetchAll('SELECT * FROM `guilds`',{}, function(collect)
+        if collect[1] then
             self.list = collect
-        else
-            self.list = {}
         end
     end)
 
     if Config.debug then
-        for i, v in ipairs(self.list) do
-            print(v.name .. " | Lv." .. v.level .. " | players:" .. v.players.. " | comment:"..v.comment)
+        for i=1, #self.list do
+            print(self.list[i].name .. " | Lv." .. self.list[i].level .. " | players:" .. self.list[i].players.. " | comment:"..self.list[i].comment)
         end
     end
 end
 
 function Guild:new(_name, _comment)
     if _name == nil then
-        return "name is nil"
+        return "Guild name is nil"
     end
 
     for i=1, #self.list do
         if self.list[i].name == _name then
-            return "the name is already exist"
+            return "The name is already exist"
         end
     end
 
@@ -48,7 +47,7 @@ function Guild:new(_name, _comment)
         comment = _comment
     })
 
-    MySQL.Async.execute('INSERT INTO `guilds` (`name`,`level`,`players`, `comment`) VALUES (@name,1,0,@comment)', {['@name'] = _name,['@comment'] = _comment}, nil)
+    MySQL.Async.execute('INSERT INTO `guilds` (`name`,`level`,`players`, `comment`) VALUES (@name,1,0,@comment)', {['name'] = _name,['comment'] = _comment}, nil)
 
     if Config.debug then
         print("New guild: "..self.list[#self.list].name)
@@ -57,6 +56,9 @@ end
 
 function Guild:join(source, name)
     local xPlayer = ESX.GetPlayerFromId(source)
+    if xPlayer.get("guild") then
+        return "You already has a guild"
+    end
 
     for i=1, #self.list do
         if self.list[i].name == name then
@@ -74,19 +76,24 @@ function Guild:join(source, name)
         end
     end
 
-    return "couldn't find the guild "..name
+    return "Couldn't find the guild "..name
 end
 
-function Guild:leave(source, name)
+function Guild:leave(source)
     local xPlayer = ESX.GetPlayerFromId(source)
+    local name = xPlayer.get("guild")
+
+    if not name then
+       return "Is not in any guild" 
+    end
 
     for i=1, #self.list do
         if self.list[i].name == name then
             self.list[i].players = self.list[i].players - 1
             
-            xPlayer.set('guild', '')
+            xPlayer.set('guild', nil)
             MySQL.Async.execute('UPDATE `guilds` SET `players`= @players WHERE `name` = @name', {["@name"] = name, ["@players"] = self.list[i].players}, nil)
-            MySQL.Async.execute('UPDATE `users` SET `guild` = "" WHERE identifier = @identifier', {["@identifier"] = xPlayer.getIdentifier()}, nil)
+            MySQL.Async.execute('UPDATE `users` SET `guild` = NULL WHERE identifier = @identifier', {["@identifier"] = xPlayer.getIdentifier()}, nil)
             
             if Config.debug then
                 print(xPlayer.getName().." leave "..self.list[i].name)
@@ -96,7 +103,7 @@ function Guild:leave(source, name)
         end
     end
 
-    return "couldn't find the guild "..name
+    return "Couldn't find the guild "..name
 end
 
 function Guild:modify(name, data)
@@ -124,45 +131,25 @@ function Guild:modify(name, data)
         end
     end
 
-    return "couldn't find the guild "..name
+    return "Couldn't find the guild "..name
 end
 
 --------------------------------------------------------------------------------------
 
 ESX.RegisterServerCallback("Guild:new",function(source,cb,name,comment)
-    local error = Guild:new(name,comment)
-    if error then
-        cb(error)
-    else
-        cb(false)
-    end
+    cb(Guild:new(name,comment))
 end)
 
 ESX.RegisterServerCallback("Guild:join",function(source,cb,name)
-    local error = Guild:join(source,name)
-    if error then
-        cb(error)
-    else
-        cb(false)
-    end
+    cb(Guild:join(source,name))
 end)
 
-ESX.RegisterServerCallback("Guild:leave",function(source,cb,name)
-    local error = Guild:leave(source,name)
-    if error then
-        cb(error)
-    else
-        cb(false)
-    end
+ESX.RegisterServerCallback("Guild:leave",function(source,cb)
+    cb(Guild:leave(source))
 end)
 
 ESX.RegisterServerCallback("Guild:modify",function(source,cb,name,data)
-    local error = Guild:modify(name,data)
-    if error then
-        cb(error)
-    else
-        cb(false)
-    end
+    cb(Guild:modify(name,data))
 end)
 
 --------------------------------------------------------------------------------------
