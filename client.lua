@@ -1,4 +1,5 @@
 local Guild = {}
+Guild.guild = nil
 
 ESX = nil
 Citizen.CreateThread(
@@ -15,8 +16,8 @@ Citizen.CreateThread(
     end
 )
 
-function Guild:init()
-    
+function Guild:load(data)
+    self.guild = data
 end
 
 function Guild:new(name,comment)
@@ -41,6 +42,8 @@ function Guild:join(name)
             if Config.debug then
                 print(error)
             end
+        else
+            self.guild = name
         end
     end,name)
 end
@@ -53,6 +56,8 @@ function Guild:leave()
             if Config.debug then
                 print(error)
             end
+        else
+            self.guild = nil
         end
     end)
 end
@@ -77,7 +82,19 @@ RegisterCommand("joinGuild", function(source,args) Guild:join(args[1]) end)
 
 RegisterCommand("leaveGuild", function() Guild:leave() end)
 
-RegisterCommand("modifyGuild", function (source,args,data) Guild:modify(args[1],data) end)
+RegisterCommand("modifyGuild", function(source,args,data) Guild:modify(args[1],data) end)
+
+exports("getGuild",function() return Guild.guild end)
+--------------------------------------------------------------------------------------
+
+RegisterNetEvent("eventName")
+
+--------------------------------------------------------------------------------------
+
+Citizen.CreateThread(function()
+    Citizen.Wait(100)
+    ESX.TriggerServerCallback("Guild:load", function(data) Guild:load(data) end)
+end)
 
 --------------------------------------------------------------------------------------
 

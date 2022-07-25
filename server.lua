@@ -20,13 +20,31 @@ function Guild:init()
         if collect[1] then
             self.list = collect
         end
+
+
+        if Config.debug then
+            for i=1, #self.list do
+                print(self.list[i].name .. " | Lv." .. self.list[i].level .. " | players:" .. self.list[i].players.. " | comment:"..self.list[i].comment)
+            end
+        end
+    end)
+end
+
+function Guild:load(source)
+    local loaded = false
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local identifier = xPlayer.getIdentifier()
+	local data = nil
+    MySQL.Async.fetchAll('SELECT * FROM `users` WHERE `identifier`=@identifier;', {['@identifier'] = identifier}, function(collect)
+        data = collect[1].guild
+        xPlayer.set("guild",data)
+        loaded = true
     end)
 
-    if Config.debug then
-        for i=1, #self.list do
-            print(self.list[i].name .. " | Lv." .. self.list[i].level .. " | players:" .. self.list[i].players.. " | comment:"..self.list[i].comment)
-        end
+    while not loaded do
+        Wait(5)
     end
+    return data
 end
 
 function Guild:new(_name, _comment)
@@ -55,6 +73,10 @@ function Guild:new(_name, _comment)
 end
 
 function Guild:join(source, name)
+    if name == nil then
+        return "Guild name is nil"
+    end
+
     local xPlayer = ESX.GetPlayerFromId(source)
     if xPlayer.get("guild") then
         return "You already has a guild"
@@ -107,6 +129,10 @@ function Guild:leave(source)
 end
 
 function Guild:modify(name, data)
+    if name == nil then
+        return "Guild name is nil"
+    end
+    
     for i=1, #self.list do
         if self.list[i].name == name then
             if data.players then
@@ -150,6 +176,10 @@ end)
 
 ESX.RegisterServerCallback("Guild:modify",function(source,cb,name,data)
     cb(Guild:modify(name,data))
+end)
+
+ESX.RegisterServerCallback("Guild:load",function(source,cb)
+    cb(Guild:load(source))
 end)
 
 --------------------------------------------------------------------------------------
