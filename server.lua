@@ -33,6 +33,12 @@ end
 function Guild:load(source)
     local loaded = false
     local xPlayer = ESX.GetPlayerFromId(source)
+
+    while not xPlayer do
+        Wait(5)
+        xPlayer = ESX.GetPlayerFromId(source)
+    end
+
     local identifier = xPlayer.getIdentifier()
 	local data = nil
     MySQL.Async.fetchAll('SELECT * FROM `users` WHERE `identifier`=@identifier;', {['@identifier'] = identifier}, function(collect)
@@ -132,7 +138,7 @@ function Guild:modify(name, data)
     if name == nil then
         return "Guild name is nil"
     end
-    
+
     for i=1, #self.list do
         if self.list[i].name == name then
             if data.players then
@@ -181,6 +187,10 @@ end)
 ESX.RegisterServerCallback("Guild:load",function(source,cb)
     cb(Guild:load(source))
 end)
+
+--------------------------------------------------------------------------------------
+
+RegisterCommand("reloadGuild", function() Guild:init() end, true)
 
 --------------------------------------------------------------------------------------
 
