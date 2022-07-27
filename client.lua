@@ -46,6 +46,7 @@ function Guild:join(name)
             end
         else
             self.guild = name
+            chat("你加入了"..name,{0,255,0})
         end
     end,name)
 end
@@ -59,7 +60,9 @@ function Guild:leave()
                 print(error)
             end
         else
+            local name = self.guild
             self.guild = nil
+            chat("你已退出"..name,{0,255,0})
         end
     end)
 end
