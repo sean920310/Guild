@@ -9,7 +9,7 @@ function changePage(){
     
 }
 
-display(true);
+display(true);//false
 
 $(function(){
     window.addEventListener("message",function(event){
@@ -25,14 +25,13 @@ $(function(){
         let buf = $(this).attr("id");
         buf = buf.substr(5);
         $(".content").removeClass('selected');
-        $(".content").addClass('notSelected');
-        $("#content-"+buf).removeClass('notSelected');
+        $(".menuButton").removeClass('btnSelected');
         $("#content-"+buf).addClass('selected');
+        $(this).addClass('btnSelected');
     });
     $("#findGuild").click(function(){
         $(".content").removeClass('selected');
-        $(".content").addClass('notSelected');
-        $("#content-search").removeClass('notSelected');
+        $(".menuButton").removeClass('btnSelected');
         $("#content-search").addClass('selected');
     });
 });

@@ -18,7 +18,7 @@ body {
     border-radius: 7px;
 }
 
-#title{
+#title {
     display: flex;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -26,7 +26,7 @@ body {
     font-weight: bold;
 }
 
-#close{
+#close {
     position: fixed;
     right: 0%;
     transform: translate(-100%, 0%);
@@ -35,17 +35,17 @@ body {
     cursor: pointer;
 }
 
-#close:hover{
-    background-color: aqua;
+#close:hover {
+    background-color: rgb(125,125,125);
 }
 
-#guild{
+#guild {
     display: flex;
     height: 550;
 }
 
 #menu {
-    list-style: none; 
+    list-style: none;
 }
 
 #selfInformation {
@@ -55,22 +55,46 @@ body {
     border: 2px solid gainsboro;
     border-radius: 10px;
     margin: 5px;
+    margin-bottom: 20px;
 }
 
 .menuButton {
+    position: relative;
     height: 30px;
     width: 120px;
     border: 2px;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    box-shadow: inset -4px -4px 6px 0 rgba(0, 0, 0, .4);
 }
 
 .menuButton:hover {
-    background-color: aqua;
+    background-color: rgb(200,200,200);
+    box-shadow: 
+        inset -4px -4px 6px 0 rgba(255, 255, 255, .2),
+        inset 4px 4px 6px 0 rgba(0, 0, 0, .4);
 }
 
-#menu-content{
+.menuButton:active{
+    top: 2px;
+}
+
+.btnSelected:hover{
+    background-color: aqua;
+    box-shadow: 
+        inset -4px -4px 6px 0 rgba(255, 255, 255, .2),
+        inset 4px 4px 6px 0 rgba(0, 0, 0, .4);
+}
+
+.btnSelected{
+    background-color: aqua;
+    box-shadow: 
+        inset -4px -4px 6px 0 rgba(255, 255, 255, .2),
+        inset 4px 4px 6px 0 rgba(0, 0, 0, .4);
+}
+
+#menu-content {
     width: 860;
     height: inherit;
     border: 1px solid gainsboro;
@@ -78,15 +102,15 @@ body {
     padding: 10px;
 }
 
-.notSelected{
+.content{
     display: none;
 }
 
-.selected{
+.selected {
     display: block;
 }
 
-#findGuild{
+#findGuild {
     position: fixed;
     bottom: 10px;
 }
