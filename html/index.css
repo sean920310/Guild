@@ -1,0 +1,52 @@
+body {
+    background: none !important;
+}
+
+#container {
+    font-size: 20px;
+    padding-left: 25px;
+    padding-right: 25px;
+    color: white;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(66, 66, 66);
+    height: 650px;
+    width: 1000px;
+    border: 2px solid aliceblue;
+    border-radius: 7px;
+}
+
+#title{
+    display: flex;
+}
+
+#guild{
+    display: flex;
+}
+
+#menu {
+    list-style: none; 
+}
+
+.menuButton {
+    height: 30px;
+    width: 100px;
+    border: 2px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.menuButton:hover {
+    background-color: aqua;
+}
+
+.notSelected{
+    display: none;
+}
+
+.selected{
+    display: block;
+}
