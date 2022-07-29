@@ -16,6 +16,11 @@ $(function(){
         let item = event.data
     
     });
+    $("#close").click(function() { 
+        display(false)
+        //post return
+    });
+
     $(".menuButton").click(function () {
         let buf = $(this).attr("id");
         buf = buf.substr(5);
@@ -23,5 +28,11 @@ $(function(){
         $(".content").addClass('notSelected');
         $("#content-"+buf).removeClass('notSelected');
         $("#content-"+buf).addClass('selected');
+    });
+    $("#findGuild").click(function(){
+        $(".content").removeClass('selected');
+        $(".content").addClass('notSelected');
+        $("#content-search").removeClass('notSelected');
+        $("#content-search").addClass('selected');
     });
 });

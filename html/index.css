@@ -20,19 +20,46 @@ body {
 
 #title{
     display: flex;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: yellow;
+    font-weight: bold;
+}
+
+#close{
+    position: fixed;
+    right: 0%;
+    transform: translate(-100%, 0%);
+    border: 1px solid gainsboro;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#close:hover{
+    background-color: aqua;
 }
 
 #guild{
     display: flex;
+    height: 550;
 }
 
 #menu {
     list-style: none; 
 }
 
+#selfInformation {
+    position: relative;
+    height: 100px;
+    width: 100px;
+    border: 2px solid gainsboro;
+    border-radius: 10px;
+    margin: 5px;
+}
+
 .menuButton {
     height: 30px;
-    width: 100px;
+    width: 120px;
     border: 2px;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
@@ -43,10 +70,23 @@ body {
     background-color: aqua;
 }
 
+#menu-content{
+    width: 860;
+    height: inherit;
+    border: 1px solid gainsboro;
+    border-radius: 10px;
+    padding: 10px;
+}
+
 .notSelected{
     display: none;
 }
 
 .selected{
     display: block;
+}
+
+#findGuild{
+    position: fixed;
+    bottom: 10px;
 }
