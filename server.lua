@@ -24,9 +24,10 @@ function Guild:init()
 
         if Config.debug then
             for i=1, #self.list do
-                print(self.list[i].name .. " | Lv." .. self.list[i].level .. " | players:" .. self.list[i].players.. " | comment:"..self.list[i].comment)
+                print(self.list[i].name .. " | Lv." .. self.list[i].level .. " | point:" .. self.list[i].point .." | players:" .. self.list[i].players.. " | comment:"..self.list[i].comment)
             end
         end
+        inited = true
     end)
 end
 
@@ -40,22 +41,33 @@ function Guild:load(source)
     end
 
     local identifier = xPlayer.getIdentifier()
-	local data = nil
+	local name = nil
     MySQL.Async.fetchAll('SELECT * FROM `users` WHERE `identifier`=@identifier;', {['@identifier'] = identifier}, function(collect)
-        data = collect[1].guild
-        xPlayer.set("guild",data)
+        name = collect[1].guild
+        xPlayer.set("guild",name)
         loaded = true
     end)
 
     while not loaded do
         Wait(5)
     end
-    return data
+
+    for i, value in ipairs(Guild.list) do
+        if value.name == name then
+            return value
+        end
+    end
+
+    return nil
 end
 
 function Guild:new(_name, _comment)
     if _name == nil then
         return "Guild name is nil"
+    end
+
+    if _comment == nil then
+        _comment = ""
     end
 
     for i=1, #self.list do
@@ -71,7 +83,7 @@ function Guild:new(_name, _comment)
         comment = _comment
     })
 
-    MySQL.Async.execute('INSERT INTO `guilds` (`name`,`level`,`players`, `comment`) VALUES (@name,1,0,@comment)', {['name'] = _name,['comment'] = _comment}, nil)
+    MySQL.Async.execute('INSERT INTO `guilds` (`name`,`level`,`point`,`players`, `comment`) VALUES (@name,1,0,0,@comment)', {['name'] = _name,['comment'] = _comment}, nil)
 
     if Config.debug then
         print("New guild: "..self.list[#self.list].name)

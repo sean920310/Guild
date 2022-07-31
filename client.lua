@@ -18,8 +18,8 @@ Citizen.CreateThread(
 
 --------------------------------------------------------------------------------------
 
-function Guild:load(data)
-    self.guild = data
+function Guild:load()
+    ESX.TriggerServerCallback("Guild:load", function(data) self.guild = data end)
 end
 
 function Guild:new(name,comment)
@@ -45,7 +45,8 @@ function Guild:join(name)
                 print(error)
             end
         else
-            self.guild = name
+            self.guild = {name = name}
+            self:load()
             chat("你加入了"..name,{0,255,0})
         end
     end,name)
@@ -60,8 +61,9 @@ function Guild:leave()
                 print(error)
             end
         else
-            local name = self.guild
-            self.guild = nil
+            local name = self.guild.name
+            self.guild.name = nil
+            self:load()
             chat("你已退出"..name,{0,255,0})
         end
     end)
@@ -79,6 +81,10 @@ function Guild:modify(name,data)
     end, name,data)
 end
 
+function Guild:setupNUI()
+    
+end
+
 --------------------------------------------------------------------------------------
 
 RegisterCommand("newGuild", function(source,args) Guild:new(args[1],table.concat(args," ",2)) end)
@@ -89,12 +95,26 @@ RegisterCommand("leaveGuild", function() Guild:leave() end)
 
 RegisterCommand("modifyGuild", function(source,args,data) Guild:modify(args[1],data) end)
 
-exports("getGuild",function() return Guild.guild end)
+exports("getGuild",function() 
+    if Guild.guild then
+        return Guild.guild.name
+    else
+        return nil
+    end
+end)
 
 --------------------------------------------------------------------------------------
 
 Citizen.CreateThread(function()
-    ESX.TriggerServerCallback("Guild:load", function(data) Guild:load(data) end)
+    Guild:load()
+    
+    while true do
+        Citizen.Wait(0)
+        
+        if IsControlJustReleased(1, Config.key) then
+                
+        end
+    end
 end)
 
 --------------------------------------------------------------------------------------

@@ -9,7 +9,7 @@ function changePage(){
     
 }
 
-display(true);//false
+display(false);//false
 
 $(function(){
     window.addEventListener("message",function(event){
