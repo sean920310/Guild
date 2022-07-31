@@ -21,17 +21,16 @@ function Guild:init()
             self.list = collect
         end
 
-
         if Config.debug then
             for i=1, #self.list do
                 print(self.list[i].name .. " | Lv." .. self.list[i].level .. " | point:" .. self.list[i].point .." | players:" .. self.list[i].players.. " | comment:"..self.list[i].comment)
             end
         end
-        inited = true
     end)
 end
 
 function Guild:load(source)
+    local data = {}
     local loaded = false
     local xPlayer = ESX.GetPlayerFromId(source)
 
@@ -52,13 +51,19 @@ function Guild:load(source)
         Wait(5)
     end
 
+    data.player = {
+        name = xPlayer.getName(),
+        level = xPlayer.get("rank")
+    }
+
     for i, value in ipairs(Guild.list) do
         if value.name == name then
-            return value
+            data.guild = value
+            return data
         end
     end
 
-    return nil
+    return data
 end
 
 function Guild:new(_name, _comment)

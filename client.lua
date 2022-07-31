@@ -1,5 +1,8 @@
 local Guild = {}
 Guild.guild = nil
+Guild.player = nil
+
+local display = false
 
 ESX = nil
 Citizen.CreateThread(
@@ -19,7 +22,10 @@ Citizen.CreateThread(
 --------------------------------------------------------------------------------------
 
 function Guild:load()
-    ESX.TriggerServerCallback("Guild:load", function(data) self.guild = data end)
+    ESX.TriggerServerCallback("Guild:load", function(data)
+         self.guild = data.guild
+         self.player = data.player
+    end)
 end
 
 function Guild:new(name,comment)
@@ -82,8 +88,40 @@ function Guild:modify(name,data)
 end
 
 function Guild:setupNUI()
-    
+    if self.guild then
+        SendNUIMessage({
+            type = 'setupInformation',
+            selfName = self.player.name,
+            selfLv = self.player.level,
+            name = self.guild.name,
+            level = self.guild.level,
+            point = self.guild.point,
+            players = self.guild.players,
+            comment = self.guild.comment
+        })
+    else
+        SendNUIMessage({
+            type = 'setupInformation',
+            selfName = self.player.name,
+            selfLv = self.player.level,
+            name = nil
+        })
+    end
 end
+
+function Guild:openNUI()
+    self:setupNUI()
+    display = true
+    SetNuiFocus(true, true)
+    SendNUIMessage({
+        type = 'open'
+    })
+end
+
+RegisterNUICallback("close", function(data)
+    SetNuiFocus(false, false)
+    display = false
+end)
 
 --------------------------------------------------------------------------------------
 
@@ -112,7 +150,19 @@ Citizen.CreateThread(function()
         Citizen.Wait(0)
         
         if IsControlJustReleased(1, Config.key) then
-                
+            Guild:openNUI()
+        end
+    end
+end)
+
+Citizen.CreateThread(function()
+    Citizen.Wait(1000)
+    while true do
+        Citizen.Wait(5)
+        if display then
+            Guild:load()
+            Guild:setupNUI()
+            Citizen.Wait(500)
         end
     end
 end)
