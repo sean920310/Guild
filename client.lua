@@ -92,7 +92,7 @@ function Guild:setupNUI()
         SendNUIMessage({
             type = 'setupInformation',
             selfName = self.player.name,
-            selfLv = self.player.level,
+            selfLv = exports.xperience.GetRank(),
             name = self.guild.name,
             level = self.guild.level,
             point = self.guild.point,
@@ -103,7 +103,7 @@ function Guild:setupNUI()
         SendNUIMessage({
             type = 'setupInformation',
             selfName = self.player.name,
-            selfLv = self.player.level,
+            selfLv = exports.xperience.GetRank(),
             name = nil
         })
     end
