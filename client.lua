@@ -1,6 +1,5 @@
 local Guild = {}
-Guild.guild = nil
-Guild.player = nil
+Guild.data = nil
 
 local display = false
 
@@ -23,8 +22,7 @@ Citizen.CreateThread(
 
 function Guild:load()
     ESX.TriggerServerCallback("Guild:load", function(data)
-         self.guild = data.guild
-         self.player = data.player
+         self.data = data
     end)
 end
 
@@ -88,23 +86,26 @@ function Guild:modify(name,data)
 end
 
 function Guild:setupNUI()
-    if self.guild then
+    if self.data.guild then
         SendNUIMessage({
-            type = 'setupInformation',
-            selfName = self.player.name,
+            type = 'setup',
+            selfName = self.data.player.name,
             selfLv = exports.xperience.GetRank(),
-            name = self.guild.name,
-            level = self.guild.level,
-            point = self.guild.point,
-            players = self.guild.players,
-            comment = self.guild.comment
+            information = {
+                name = self.data.guild.name,
+                level = self.data.guild.level,
+                point = self.data.guild.point,
+                players = self.data.guild.players,
+                comment = self.data.guild.comment,
+                ranking = self.data.ranking
+            }
         })
     else
         SendNUIMessage({
-            type = 'setupInformation',
-            selfName = self.player.name,
+            type = 'setup',
+            selfName = self.data.player.name,
             selfLv = exports.xperience.GetRank(),
-            name = nil
+            information = nil
         })
     end
 end
@@ -134,8 +135,8 @@ RegisterCommand("leaveGuild", function() Guild:leave() end)
 RegisterCommand("modifyGuild", function(source,args,data) Guild:modify(args[1],data) end)
 
 exports("getGuild",function() 
-    if Guild.guild then
-        return Guild.guild.name
+    if Guild.data.guild then
+        return Guild.data.guild.name
     else
         return nil
     end

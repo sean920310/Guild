@@ -1,5 +1,6 @@
-let keyCode = 'KeyK'
-let hasGuild = false;
+let keyCode = 'KeyK';
+let htmlDebug = false;
+let hasGuild = htmlDebug;
 
 function display(bool) {
     if (bool)
@@ -8,25 +9,39 @@ function display(bool) {
         $("#container").hide();
 }
 
-display(false);//false
+display(htmlDebug);//false
 
 $(function(){
     window.addEventListener("message",function(event){
         let item = event.data
         if (item.type === "open") {
-            display(true)
+            display(true);
             if(!hasGuild){
                 $(".content").removeClass('selected');
                 $(".menuButton").removeClass('btnSelected');
             }
         }
-        else if (item.type === "setupInformation") {
-            if(item.name){
-                $("#information-name").text(item.name);
-                $("#information-point").text(item.point);
-                $("#information-players").text(item.players);
-                $("#information-comment").text(item.comment);
+        else if (item.type === "setup") {
+            if(item.information.name){
+                $("#information-name").text(item.information.name);
+                $("#information-point").text(item.information.point);
+                $("#information-players").text(item.information.players);
+                $("#information-comment").text(item.information.comment);
                 
+                let ranking = item.information.ranking;
+                let buf = "";
+                for(let i=0; i<3; i++)
+                {
+                    if(ranking[i]){
+                        buf = buf + '<tr><td class = "ranking-num">'+ranking[i].num+'</td> <td class = "ranking-name">'+ ranking[i].name+'</td> <td class = "ranking-point">'+ ranking[i].point+'</td> </tr>';
+                    }
+                    else
+                    {
+                        buf = buf + '<tr><td class = "ranking-num">'+(i+1)+'</td> <td class = "ranking-name"></td> <td class = "ranking-point"></td> </tr>';
+                    }
+                }
+                $("#information-ranking table tbody").html(buf);
+
                 hasGuild = true;
             }
             else{
@@ -58,18 +73,18 @@ $(function(){
     document.onkeyup = function(event){
         if (event.code === "Escape") {
             $.post('https://Guild/close', JSON.stringify({}));
-            display(false)
+            display(false);
             return;
         }
         if (event.code === keyCode) {
             $.post('https://Guild/close', JSON.stringify({}));
-            display(false)
+            display(false);
             return;
         }
     }
 
     $("#close").click(function() { 
-        display(false)
+        display(false);
         $.post('https://Guild/close', JSON.stringify({}));
     });
 

@@ -17,6 +17,7 @@ function Guild:init()
         Wait(5)
     end
 
+    local listReady = false
     MySQL.Async.fetchAll('SELECT * FROM `guild_list`',{}, function(collect)
         if collect[1] then
             self.list = collect
@@ -36,7 +37,12 @@ function Guild:init()
                 print("^3"..self.list[i].name .. " | Lv." .. self.list[i].level .. " | point:" .. self.list[i].point .." | players:" .. self.list[i].players.. " | comment:"..self.list[i].comment.."^7")
             end
         end
+        listReady = true
     end)
+
+    while not listReady do
+        Wait(5)
+    end
 
     MySQL.Async.fetchAll('SELECT * FROM `guild_player`',{}, function(collect)
         if collect[1] then
@@ -89,6 +95,7 @@ function Guild:load(source)
 
             if name then
                 data.guild = self.list[match[name]]
+                data.ranking = self:sortByPoint(name)
             else
                 data.guild = nil
             end
@@ -249,6 +256,45 @@ function Guild:modify(name, data)
     end
 
     return "Couldn't find the guild "..name
+end
+
+function Guild:sortByPoint(name)
+    local sorted = {} 
+    for i, v in ipairs(self.list) do
+        sorted[i] = v
+    end 
+    local result = {}
+
+    for i=1, #sorted-1 do
+        for j=1, #sorted-1 do
+            if sorted[j].point < sorted[j+1].point then
+                local temp = sorted[j]
+                sorted[j] = sorted[j+1]
+                sorted[j+1] = temp
+            end
+        end 
+    end
+
+    for i=1, #sorted do
+        if sorted[i].name == name then
+            if i==1 then
+                for j = i, i+2 do
+                    table.insert(result,#result+1,sorted[j])
+                    result[#result].num = j
+                end
+                break
+            else
+                for j = i-1, i+1 do
+                    table.insert(result,#result+1,sorted[j])
+                    result[#result].num = j
+                end
+                break
+            end
+            
+        end
+    end
+
+    return result
 end
 
 --------------------------------------------------------------------------------------

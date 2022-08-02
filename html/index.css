@@ -181,15 +181,23 @@ body {
     color: rgb(200,200,200);
 }
 
-#information-rank{
+#information-ranking{
     color: white;
     font-weight: normal;
     padding: 0px 10px;
-    height: 50px;
     border: 1px solid white;
     border-radius: 5px;
     background-color: rgb(33,33,33);
     box-shadow: inset 0px -10px 15px -5px rgba(255, 255, 255, .3);
+}
+
+#information-ranking table{
+    text-align: left;
+    border-collapse: collapse;
+}
+
+#information-ranking tbody td{
+    border-bottom: 1px solid rgb(100,100,100);
 }
 
 #information-comment{
