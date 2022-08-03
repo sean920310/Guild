@@ -323,6 +323,11 @@ end)
 
 RegisterCommand("reloadGuild", function() Guild:init() end, true)
 
+RegisterNetEvent("Guild:server:onChange")
+AddEventHandler("Guild:server:onChange",function ()
+    TriggerClientEvent("Guild:client:onChange", -1)
+end)
+
 --------------------------------------------------------------------------------------
 
 CreateThread(function()
