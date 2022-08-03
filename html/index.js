@@ -1,5 +1,5 @@
 let keyCode = 'KeyK';
-let htmlDebug = true;
+let htmlDebug = false;
 let hasGuild = htmlDebug;
 
 function display(bool) {
