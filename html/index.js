@@ -1,5 +1,5 @@
 let keyCode = 'KeyK';
-let htmlDebug = false;
+let htmlDebug = true;
 let hasGuild = htmlDebug;
 
 function display(bool) {
@@ -23,6 +23,7 @@ $(function(){
         }
         else if (item.type === "setup") {
             if(item.information.name){
+                //information
                 $("#information-name").text(item.information.name);
                 $("#information-point").text(item.information.point);
                 $("#information-players").text(item.information.players);
@@ -41,6 +42,21 @@ $(function(){
                     }
                 }
                 $("#information-ranking table tbody").html(buf);
+
+                //member
+                let member = item.member.member;
+                buf = "";
+                for(let i=0; i<200; i++)
+                {
+                    if(member[i]){
+                        buf = buf + '<tr><td class = "member-num">'+(i+1)+'</td> <td class = "member-name">'+ member[i].name+'</td> <td class = "member-grade">'+ member[i].grade+'</td> <td class = "member-point">'+ member[i].point+'</td> </tr>';
+                    }
+                    else
+                    {
+                        buf = buf + '<tr><td class = "member-num">'+(i+1)+'</td> <td class = "member-name"></td><td class = "member-grade"></td> <td class = "member-point"></td> </tr>';
+                    }
+                }
+                $("#member table tbody").html(buf);
 
                 hasGuild = true;
             }

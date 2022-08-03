@@ -116,6 +116,9 @@ function Guild:setupNUI()
                 players = self.data.guild.players,
                 comment = self.data.guild.comment,
                 ranking = self.data.ranking
+            },
+            member = {
+                member = self.data.guild.member
             }
         })
     else
