@@ -123,8 +123,8 @@ body {
 }
 
 #menu-content {
-    width: 860;
-    height: inherit;
+    width: 100%;
+    height: 100%;
     border: 1px solid gainsboro;
     border-radius: 10px;
     padding: 10px;
@@ -217,9 +217,8 @@ body {
 
 /* ------------------member------------------ */
 
-
 #member{
-    height: 495px;
+    height: 500px;
     margin: 10px;
     padding: 0 20px;
     border: 1px solid white;
@@ -249,7 +248,7 @@ body {
 
 #member table tbody{
     width: 100%;
-    height: 465;
+    height: 465px;
     display: block;
     overflow-y: auto;
 }
@@ -267,6 +266,89 @@ body {
 }
 
 #member tbody td{
+    border-bottom: 1px solid rgb(100,100,100);
+}
+
+/* ------------------search------------------ */
+
+#content-search div:first-child{
+    display: flex;
+    width: 100%;
+}
+
+#search-bar{
+    display: inline-flex;
+    position: relative;
+    right: 0%;
+}
+
+#search-input{
+    border-radius: 5px;
+}
+
+#search-button{
+    width: 70px;
+    margin: 0 10px;
+}
+
+#search{
+    height: 500px;
+    margin: 10px;
+    padding: 0 20px;
+    border: 1px solid white;
+    background-color: rgb(44,44,44);
+    border-radius: 10px;
+    box-shadow: inset 0px -10px 15px -5px rgba(255, 255, 255, .3);
+    overflow-y: auto;
+}
+
+#search table{
+    width: 100%;
+    color: white;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+#search table thead{
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    color: rgb(200,200,200);
+}
+
+#search thead th:first-child,
+#search tbody td:first-child{
+    width: 50px;
+}
+
+#search thead th:last-child,
+#search tbody td:last-child{
+    width: 70px;
+}
+
+#search table tbody{
+    width: 100%;
+    height: 465px;
+    display: block;
+    overflow-y: auto;
+}
+
+#search table tr{
+    display: table;
+    width: 100%;
+    height: 30px;
+    table-layout: fixed;
+}
+
+#search tbody td:first-child{
+    color: rgb(160,160,160);
+}
+
+#search tbody td:last-child{
+    text-align: center;
+}
+
+#search tbody tr td{
     border-bottom: 1px solid rgb(100,100,100);
 }
 
