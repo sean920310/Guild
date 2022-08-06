@@ -58,7 +58,6 @@ function Guild:join(name)
                 print(error)
             end
         else
-            self.guild = {name = name}
             self:load()
             chat("你加入了"..name,{0,255,0})
 
@@ -77,8 +76,7 @@ function Guild:leave()
                 print(error)
             end
         else
-            local name = self.guild.name
-            self.guild.name = nil
+            local name = self.data.guild.name
             self:load()
             chat("你已退出"..name,{0,255,0})
 
@@ -119,14 +117,18 @@ function Guild:setupNUI()
             },
             member = {
                 member = self.data.guild.member
-            }
+            },
+            search = self.data.list
         })
     else
         SendNUIMessage({
             type = 'setup',
             selfName = self.data.player.name,
             selfLv = exports.xperience.GetRank(),
-            information = nil
+            information = nil,
+            member = nil,
+            search = self.data.list
+
         })
     end
 end

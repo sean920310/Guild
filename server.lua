@@ -93,6 +93,8 @@ function Guild:load(source)
             name = collect[1].guild
             xPlayer.set("guild",name)
 
+            data.list = self.list
+
             if name then
                 data.guild = self.list[match[name]]
                 data.ranking = self:sortByPoint(name)
@@ -263,7 +265,6 @@ function Guild:sortByPoint(name)
     for i, v in ipairs(self.list) do
         sorted[i] = v
     end 
-    local result = {}
 
     for i=1, #sorted-1 do
         for j=1, #sorted-1 do
@@ -275,26 +276,7 @@ function Guild:sortByPoint(name)
         end 
     end
 
-    for i=1, #sorted do
-        if sorted[i].name == name then
-            if i==1 then
-                for j = i, i+2 do
-                    table.insert(result,#result+1,sorted[j])
-                    result[#result].num = j
-                end
-                break
-            else
-                for j = i-1, i+1 do
-                    table.insert(result,#result+1,sorted[j])
-                    result[#result].num = j
-                end
-                break
-            end
-            
-        end
-    end
-
-    return result
+    return sorted
 end
 
 --------------------------------------------------------------------------------------

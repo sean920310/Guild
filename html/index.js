@@ -1,5 +1,5 @@
 let keyCode = 'KeyK';
-let htmlDebug = true;
+let htmlDebug = false;
 let hasGuild = htmlDebug;
 
 function display(bool) {
@@ -16,13 +16,14 @@ $(function(){
         let item = event.data
         if (item.type === "open") {
             display(true);
-            if(!hasGuild){
-                $(".content").removeClass('selected');
-                $(".menuButton").removeClass('btnSelected');
-            }
+
+            $(".content").removeClass('selected');
+            $(".menuButton").removeClass('btnSelected');
+            
+            $(".search-join").attr("disabled",hasGuild);
         }
         else if (item.type === "setup") {
-            if(item.information.name){
+            if(item.information){
                 //information
                 $("#information-name").text(item.information.name);
                 $("#information-point").text(item.information.point);
@@ -31,14 +32,26 @@ $(function(){
                 
                 let ranking = item.information.ranking;
                 let buf = "";
-                for(let i=0; i<3; i++)
+                for(let i=0; i<ranking.length; i++)
                 {
-                    if(ranking[i]){
-                        buf = buf + '<tr><td class = "ranking-num">'+ranking[i].num+'</td> <td class = "ranking-name">'+ ranking[i].name+'</td> <td class = "ranking-point">'+ ranking[i].point+'</td> </tr>';
-                    }
-                    else
-                    {
-                        buf = buf + '<tr><td class = "ranking-num">'+(i+1)+'</td> <td class = "ranking-name"></td> <td class = "ranking-point"></td> </tr>';
+                    if(ranking[i].name == item.information.name){
+                        if(i){
+                            for(let j=i-1;j<i+2;j++){
+                                if(ranking[j])
+                                    buf = buf + '<tr><td class = "ranking-num">'+(j+1)+'</td> <td class = "ranking-name">'+ ranking[j].name+'</td> <td class = "ranking-point">'+ ranking[j].point+'</td> </tr>';
+                                else
+                                    buf = buf + '<tr><td class = "ranking-num">'+(j+1)+'</td> <td class = "ranking-name"></td> <td class = "ranking-point"></td> </tr>';
+                            }
+                        }
+                        else{
+                            for(let j=0;j<3;j++){
+                                if(ranking[j])
+                                    buf = buf + '<tr><td class = "ranking-num">'+(j+1)+'</td> <td class = "ranking-name">'+ ranking[j].name+'</td> <td class = "ranking-point">'+ ranking[j].point+'</td> </tr>';
+                                else
+                                    buf = buf + '<tr><td class = "ranking-num">'+(j+1)+'</td> <td class = "ranking-name"></td> <td class = "ranking-point"></td> </tr>';
+                            }
+                        }
+                        break;
                     }
                 }
                 $("#information-ranking table tbody").html(buf);
@@ -66,6 +79,20 @@ $(function(){
 
             $("#self-name").text(item.selfName);
             $("#self-lv").text("Lv."+item.selfLv);
+
+            let search = item.search;
+            buf = "";
+            for(let i=0; i<search.length; i++)
+            {
+                if(search[i]){
+                    buf = buf + '<tr><td>'+(i+1)+'</td> <td>'+ search[i].name+'</td> <td>'+ search[i].players+'</td> <td>'+ search[i].point+'</td><td><button class="search-join">申請加入</button><button class="search-information">公會資訊</button></td> </tr>';
+                }
+                else
+                {
+                    buf = buf + '<tr><td>'+(i+1)+'</td> <td></td> <td></td> <td></td> <td></td> </tr>';
+                }
+            }
+            $("#search table tbody").html(buf);
         }
     });
     
@@ -103,6 +130,7 @@ $(function(){
         display(false);
         $.post('https://Guild/close', JSON.stringify({}));
     });
+
 
 
 });

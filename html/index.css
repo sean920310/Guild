@@ -289,6 +289,7 @@ body {
 #search-button{
     width: 70px;
     margin: 0 10px;
+    border-radius: 5px;
 }
 
 #search{
@@ -323,7 +324,7 @@ body {
 
 #search thead th:last-child,
 #search tbody td:last-child{
-    width: 70px;
+    width: 80px
 }
 
 #search table tbody{
@@ -352,7 +353,26 @@ body {
     border-bottom: 1px solid rgb(100,100,100);
 }
 
-/* scrollbar */
+.search-join,
+.search-information{
+    display: block;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+.search-join:hover:enabled,
+.search-information:hover:enabled,
+#search-button:hover{
+    background-color: rgb(200,200,200);
+}
+
+.search-join:active,
+.search-information:active,
+#search-button:active{
+    box-shadow: inset 2px 2px 5px 0 rgba(0, 0, 0, .4);
+}
+
+/* ------------------scrollbar------------------ */
 
 ::-webkit-scrollbar {
 	width: 5px;
