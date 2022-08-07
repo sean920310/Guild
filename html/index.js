@@ -117,11 +117,13 @@ $(function(){
         let input = $("#search-input").val();
 
         let buf = "";
+        let count = 1;
         for(let i=0; i<guildList.length; i++)
         {
             if(guildList[i]){
                 if(guildList[i].name.includes(input)){
-                    buf = buf + '<tr><td>'+(i+1)+'</td> <td>'+ guildList[i].name+'</td> <td>'+ guildList[i].players+'</td> <td>'+ guildList[i].point+'</td><td><button class="search-join" id="join-'+guildList[i].name+'">申請加入</button><button class="search-information" id="information-'+guildList[i].name+'">公會資訊</button></td> </tr>';
+                    buf = buf + '<tr><td>'+(count)+'</td> <td>'+ guildList[i].name+'</td> <td>'+ guildList[i].players+'</td> <td>'+ guildList[i].point+'</td><td><button class="search-join" id="join-'+guildList[i].name+'">申請加入</button><button class="search-information" id="information-'+guildList[i].name+'">公會資訊</button></td> </tr>';
+                    count++;
                 }
             }
         }
