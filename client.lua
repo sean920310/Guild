@@ -112,13 +112,12 @@ function Guild:setupNUI()
                 level = self.data.guild.level,
                 point = self.data.guild.point,
                 players = self.data.guild.players,
-                comment = self.data.guild.comment,
-                ranking = self.data.ranking
+                comment = self.data.guild.comment
             },
             member = {
                 member = self.data.guild.member
             },
-            search = self.data.list
+            list = self.data.list
         })
     else
         SendNUIMessage({
@@ -127,8 +126,7 @@ function Guild:setupNUI()
             selfLv = exports.xperience.GetRank(),
             information = nil,
             member = nil,
-            search = self.data.list
-
+            list = self.data.list
         })
     end
 end
@@ -142,9 +140,15 @@ function Guild:openNUI()
     })
 end
 
+--------------------------------------------------------------------------------------
+
 RegisterNUICallback("close", function(data)
     SetNuiFocus(false, false)
     display = false
+end)
+
+RegisterNUICallback("join", function(data)
+    Guild:join(data.name)
 end)
 
 --------------------------------------------------------------------------------------

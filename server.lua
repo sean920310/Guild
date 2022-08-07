@@ -97,7 +97,6 @@ function Guild:load(source)
 
             if name then
                 data.guild = self.list[match[name]]
-                data.ranking = self:sortByPoint(name)
             else
                 data.guild = nil
             end
@@ -258,25 +257,6 @@ function Guild:modify(name, data)
     end
 
     return "Couldn't find the guild "..name
-end
-
-function Guild:sortByPoint(name)
-    local sorted = {} 
-    for i, v in ipairs(self.list) do
-        sorted[i] = v
-    end 
-
-    for i=1, #sorted-1 do
-        for j=1, #sorted-1 do
-            if sorted[j].point < sorted[j+1].point then
-                local temp = sorted[j]
-                sorted[j] = sorted[j+1]
-                sorted[j+1] = temp
-            end
-        end 
-    end
-
-    return sorted
 end
 
 --------------------------------------------------------------------------------------
