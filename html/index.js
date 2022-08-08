@@ -4,6 +4,7 @@ let hasGuild = htmlDebug;
 let data = {};
 data.list = [];
 data.ranking = [];
+let confirmOpen = false;
 
 function display(bool) {
     if (bool)
@@ -30,7 +31,7 @@ $(function(){
 
             if(item.information){
                 //information
-                setupInformation(item.information);
+                setupInformation(item.information,true);
 
                 //member
                 let member = item.member.member;
@@ -50,6 +51,8 @@ $(function(){
                 hasGuild = true;
             }
             else{
+                $(".content").removeClass('selected');
+                $(".menuButton").removeClass('btnSelected');
                 hasGuild = false;
             }
 
@@ -80,7 +83,7 @@ $(function(){
             page = page.substr(5);
 
             if(page == "information"&& !htmlDebug){
-                setupInformation(data.information);
+                setupInformation(data.information,true);
             }
             
             $(".content").removeClass('selected');
@@ -98,20 +101,44 @@ $(function(){
     
     document.onkeyup = function(event){
         if (event.code === "Escape") {
-            $.post('https://Guild/close', JSON.stringify({}));
-            display(false);
-            return;
+            if(confirmOpen){  
+                $("#confirmWindow").hide();
+                confirmOpen = false;
+            }
+            else{
+                $.post('https://Guild/close', JSON.stringify({}));
+                display(false);
+            }
         }
         if (event.code === keyCode) {
-            $.post('https://Guild/close', JSON.stringify({}));
-            display(false);
-            return;
+            if(!confirmOpen){ 
+                $.post('https://Guild/close', JSON.stringify({}));
+                display(false);
+            }
         }
     }
 
     $("#close").click(function() { 
         display(false);
         $.post('https://Guild/close', JSON.stringify({}));
+    });
+
+    $("#leaveGuild").click(function() {
+        $("#confirmWindow").show();
+        confirmOpen = true;
+    });
+
+    $("#confirm-button-yes").click(function() {
+        $("#confirmWindow").hide();
+        confirmOpen = false;
+        $.post('https://Guild/leave', JSON.stringify({}));
+        $(".content").removeClass('selected');
+        $(".menuButton").removeClass('btnSelected');
+    });
+
+    $("#confirm-button-no").click(function() {
+        $("#confirmWindow").hide();
+        confirmOpen = false;
     });
 
     $("#search-button").click(function(){
@@ -155,7 +182,7 @@ $(function(){
         {
             if(data.list[i]){
                 if(data.list[i].name == guildName){
-                    setupInformation(data.list[i]);
+                    setupInformation(data.list[i],false);
                     break;
                 }
             }
@@ -164,7 +191,7 @@ $(function(){
 });
 
 
-function setupInformation(guild){
+function setupInformation(guild,selfGuild){
     $("#information-name").text(guild.name);
     $("#information-point").text(guild.point);
     $("#information-players").text(guild.players);
@@ -204,6 +231,13 @@ function setupInformation(guild){
         }
     }
     $("#information-ranking table tbody").html(buf);
+
+    if(selfGuild){
+        $("#leaveGuild").show();
+    }
+    else{
+        $("#leaveGuild").hide();
+    }
 }
 
 function setupRanking(){

@@ -151,11 +151,14 @@ RegisterNUICallback("join", function(data)
     Guild:join(data.name)
 end)
 
+RegisterNUICallback("leave", function(data)
+    Guild:leave()
+end)
+
 --------------------------------------------------------------------------------------
 
 RegisterNetEvent("Guild:client:onChange")
 AddEventHandler("Guild:client:onChange", function()
-    Citizen.Wait(1000)
     Guild:load()
     Guild:setupNUI()
 end)
