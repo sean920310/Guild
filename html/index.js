@@ -2,7 +2,8 @@ let keyCode = 'KeyK';
 let htmlDebug = false;
 let hasGuild = htmlDebug;
 let data = {};
-let guildList = [];
+data.list = [];
+data.ranking = [];
 
 function display(bool) {
     if (bool)
@@ -25,7 +26,7 @@ $(function(){
         }
         else if (item.type === "setup") {
             data = item;
-            guildList = item.list;
+            setupRanking();
 
             if(item.information){
                 //information
@@ -57,10 +58,10 @@ $(function(){
 
             //search
             buf = "";
-            for(let i=0; i<guildList.length; i++)
+            for(let i=0; i<data.list.length; i++)
             {
-                if(guildList[i]){
-                    buf = buf + '<tr><td>'+(i+1)+'</td> <td>'+ guildList[i].name+'</td> <td>'+ guildList[i].players+'</td> <td>'+ guildList[i].point+'</td><td><button class="search-join" id="join-'+guildList[i].name+'">申請加入</button><button class="search-information" id="information-'+guildList[i].name+'">公會資訊</button></td> </tr>';
+                if(data.list[i]){
+                    buf = buf + '<tr><td>'+(i+1)+'</td> <td>'+ data.list[i].name+'</td> <td>'+ data.list[i].players+'</td> <td>'+ data.list[i].point+'</td><td><button class="search-join" id="join-'+data.list[i].name+'">申請加入</button><button class="search-information" id="information-'+data.list[i].name+'">公會資訊</button></td> </tr>';
                 }
                 else
                 {
@@ -78,7 +79,7 @@ $(function(){
             let page = $(this).attr("id");
             page = page.substr(5);
 
-            if(page == "information"){
+            if(page == "information"&& !htmlDebug){
                 setupInformation(data.information);
             }
             
@@ -118,11 +119,11 @@ $(function(){
 
         let buf = "";
         let count = 1;
-        for(let i=0; i<guildList.length; i++)
+        for(let i=0; i<data.list.length; i++)
         {
-            if(guildList[i]){
-                if(guildList[i].name.includes(input)){
-                    buf = buf + '<tr><td>'+(count)+'</td> <td>'+ guildList[i].name+'</td> <td>'+ guildList[i].players+'</td> <td>'+ guildList[i].point+'</td><td><button class="search-join" id="join-'+guildList[i].name+'">申請加入</button><button class="search-information" id="information-'+guildList[i].name+'">公會資訊</button></td> </tr>';
+            if(data.list[i]){
+                if(data.list[i].name.includes(input)){
+                    buf = buf + '<tr><td>'+(count)+'</td> <td>'+ data.list[i].name+'</td> <td>'+ data.list[i].players+'</td> <td>'+ data.list[i].point+'</td><td><button class="search-join" id="join-'+data.list[i].name+'">申請加入</button><button class="search-information" id="information-'+data.list[i].name+'">公會資訊</button></td> </tr>';
                     count++;
                 }
             }
@@ -132,6 +133,7 @@ $(function(){
     });
 
     $("#search").on("click", ".search-join", function(){
+        $(".search-join").attr("disabled",true);
         let guildName = $(this).attr("id");
         guildName = guildName.substr(5)
 
@@ -149,11 +151,11 @@ $(function(){
         $(".menuButton").removeClass('btnSelected');
         $("#content-information").addClass('selected');
 
-        for(let i=0; i<guildList.length; i++)
+        for(let i=0; i<data.list.length; i++)
         {
-            if(guildList[i]){
-                if(guildList[i].name == guildName){
-                    setupInformation(guildList[i]);
+            if(data.list[i]){
+                if(data.list[i].name == guildName){
+                    setupInformation(data.list[i]);
                     break;
                 }
             }
@@ -167,42 +169,65 @@ function setupInformation(guild){
     $("#information-point").text(guild.point);
     $("#information-players").text(guild.players);
     $("#information-comment").text(guild.comment);
-    
-    let ranking = [];
-    for(let i=0; i<guildList.length; i++)
-    {
-        if(guildList[i])
-        {
-            let j = 0;
-            for(; j<ranking.length; j++){
-                if(ranking[j].point<guildList[i].point)
-                    break;
-            }
-            ranking.splice(j,0,guildList[i]);
-        }
-    }
+        
     let buf = "";
-    for(let i=0; i<ranking.length; i++)
+    for(let i=0; i<data.ranking.length; i++)
     {
-        if(ranking[i].name == guild.name){
+        if(data.ranking[i].name == guild.name){
             if(i){
                 for(let j=i-1;j<i+2;j++){
-                    if(ranking[j])
-                    buf = buf + '<tr><td class = "ranking-num">'+(j+1)+'</td> <td class = "ranking-name">'+ ranking[j].name+'</td> <td class = "ranking-point">'+ ranking[j].point+'</td> </tr>';
-                    else
-                    buf = buf + '<tr><td class = "ranking-num">'+(j+1)+'</td> <td class = "ranking-name"></td> <td class = "ranking-point"></td> </tr>';
+                    if(data.ranking[j]){
+                        if(j==i)
+                            buf = buf + '<tr style="background-color: rgb(60,60,60);"><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point+'</td> </tr>';
+                        else
+                            buf = buf + '<tr><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point+'</td> </tr>';
+                    }
+                    else{
+                        buf = buf + '<tr><td>'+(j+1)+'</td> <td></td> <td></td> </tr>';
+                    }
                 }
             }
             else{
                 for(let j=0;j<3;j++){
-                    if(ranking[j])
-                    buf = buf + '<tr><td class = "ranking-num">'+(j+1)+'</td> <td class = "ranking-name">'+ ranking[j].name+'</td> <td class = "ranking-point">'+ ranking[j].point+'</td> </tr>';
-                    else
-                    buf = buf + '<tr><td class = "ranking-num">'+(j+1)+'</td> <td class = "ranking-name"></td> <td class = "ranking-point"></td> </tr>';
+                    if(data.ranking[j]){
+                        if(!j)
+                            buf = buf + '<tr style="background-color: rgb(60,60,60);"><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point+'</td> </tr>';
+                        else
+                            buf = buf + '<tr><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point+'</td> </tr>';
+                    }
+                    else{
+                        buf = buf + '<tr><td>'+(j+1)+'</td> <td></td> <td></td> </tr>';
+                    }
                 }
             }
             break;
         }
     }
     $("#information-ranking table tbody").html(buf);
+}
+
+function setupRanking(){
+    let ranking = [];
+    for(let i=0; i<data.list.length; i++)
+    {
+        if(data.list[i])
+        {
+            let j = 0;
+            for(; j<ranking.length; j++){
+                if(ranking[j].point<data.list[i].point)
+                    break;
+            }
+            ranking.splice(j,0,data.list[i]);
+        }
+    }
+    data.ranking = ranking;
+
+    let buf = "";
+    for(let i=0; i<data.ranking.length; i++)
+    {
+        if(data.ranking[i]){
+            buf = buf + '<tr><td>'+(i+1)+'</td> <td>'+ data.ranking[i].name+'</td> <td>'+ data.ranking[i].point+'</td> </tr>';
+        }
+    }
+    $("#ranking table tbody").html(buf);
 }
