@@ -4,7 +4,15 @@ let hasGuild = htmlDebug;
 let data = {};
 data.list = [];
 data.ranking = [];
-let confirmOpen = false;
+let leaveConfirm = new ConfirmBox("確認是否要退出",()=>{
+    $.post('https://Guild/leave', JSON.stringify({}));
+    $(".content").removeClass('selected');
+    $(".menuButton").removeClass('btnSelected');
+},()=>{});
+
+let editConfirm;
+
+let editingGuild = false;
 
 function display(bool) {
     if (bool)
@@ -29,24 +37,12 @@ $(function(){
             data = item;
             setupRanking();
 
-            if(item.information){
+            if(item.guild){
                 //information
-                setupInformation(item.information,true);
+                setupInformation(data.guild,true);
 
                 //member
-                let member = item.member.member;
-                buf = "";
-                for(let i=0; i<member.length; i++)
-                {
-                    if(member[i]){
-                        buf = buf + '<tr><td class = "member-num">'+(i+1)+'</td> <td class = "member-name">'+ member[i].name+'</td> <td class = "member-grade">'+ member[i].grade+'</td> <td class = "member-point">'+ member[i].point+'</td> </tr>';
-                    }
-                    else
-                    {
-                        buf = buf + '<tr><td class = "member-num">'+(i+1)+'</td> <td class = "member-name"></td><td class = "member-grade"></td> <td class = "member-point"></td> </tr>';
-                    }
-                }
-                $("#member table tbody").html(buf);
+                setupMember(data.guild);
 
                 hasGuild = true;
             }
@@ -56,8 +52,8 @@ $(function(){
                 hasGuild = false;
             }
 
-            $("#self-name").text(item.selfName);
-            $("#self-lv").text("Lv."+item.selfLv);
+            $("#self-name").text(item.player.name);
+            $("#self-lv").text("Lv."+item.player.level);
 
             //search
             buf = "";
@@ -77,13 +73,13 @@ $(function(){
     });
     
     $(".menuButton").click(function () {
-        if(hasGuild){
+        if(hasGuild && !editingGuild){
             
             let page = $(this).attr("id");
             page = page.substr(5);
 
             if(page == "information"&& !htmlDebug){
-                setupInformation(data.information,true);
+                setupInformation(data.guild,true);
             }
             
             $(".content").removeClass('selected');
@@ -94,16 +90,20 @@ $(function(){
     });
     
     $("#findGuild").click(function(){
-        $(".content").removeClass('selected');
-        $(".menuButton").removeClass('btnSelected');
-        $("#content-search").addClass('selected');
+        if(!editingGuild){
+            $(".content").removeClass('selected');
+            $(".menuButton").removeClass('btnSelected');
+            $("#content-search").addClass('selected');
+        }
     });
     
     document.onkeyup = function(event){
         if (event.code === "Escape") {
-            if(confirmOpen){  
-                $("#confirmWindow").hide();
-                confirmOpen = false;
+            if(editingGuild){
+                $("#editGuild").trigger( "click" );
+            }
+            else if(ConfirmBox.isOpen){
+                $("#confirm-button-no").trigger( "click" );
             }
             else{
                 $.post('https://Guild/close', JSON.stringify({}));
@@ -111,7 +111,7 @@ $(function(){
             }
         }
         if (event.code === keyCode) {
-            if(!confirmOpen){ 
+            if(!ConfirmBox.isOpen&&!editingGuild){ 
                 $.post('https://Guild/close', JSON.stringify({}));
                 display(false);
             }
@@ -119,26 +119,74 @@ $(function(){
     }
 
     $("#close").click(function() { 
-        display(false);
-        $.post('https://Guild/close', JSON.stringify({}));
+        if(editingGuild){
+            $("#editGuild").trigger( "click" );
+        }
+        else{
+            display(false);
+            $.post('https://Guild/close', JSON.stringify({}));
+        }
+    });
+
+    $("#editGuild").click(function () { 
+        let originName = data.guild.name;
+        let originComment = data.guild.comment;
+        if(editingGuild){
+            let editName = $("#newGuildName").val();
+            let editComment = $("#newGuildComment").val();
+            if(editName==""){
+                editName = originName;
+            }
+            if(editComment == ""){
+                editComment = originComment;
+            }
+
+            if(originComment!=editComment||originName!=editName){
+                editConfirm = new ConfirmBox("是否要儲存編輯",()=>{
+                    data.guild.name = editName;
+                    data.guild.comment = editComment;
+                    $.post('https://Guild/edit', JSON.stringify({
+                        name : editName,
+                        comment : editComment
+                    }));
+                },()=>{
+                    $("#information-name").text(data.guild.name);
+                    $("#information-comment").text(data.guild.comment);
+                });
+                editConfirm.open();
+            }
+            $("#information-name").text(editName);
+            $("#information-comment").text(editComment);
+            $("#editGuild").text("編輯公會");
+        }
+        else{
+            $("#editGuild").text("結束編輯");
+            $("#information-name").html('<input id="newGuildName" value="'+ originName +'">')
+            $("#information-comment").html('<textarea id="newGuildComment">' + originComment +'</textarea>')
+        }
+        editingGuild = !editingGuild;
     });
 
     $("#leaveGuild").click(function() {
-        $("#confirmWindow").show();
-        confirmOpen = true;
+        if(!editingGuild){
+            leaveConfirm.open();
+        }
     });
 
     $("#confirm-button-yes").click(function() {
-        $("#confirmWindow").hide();
-        confirmOpen = false;
-        $.post('https://Guild/leave', JSON.stringify({}));
-        $(".content").removeClass('selected');
-        $(".menuButton").removeClass('btnSelected');
+        if(leaveConfirm.nowOpen){
+            leaveConfirm.yes();
+        }else if(editConfirm.nowOpen){
+            editConfirm.yes();
+        }
     });
 
     $("#confirm-button-no").click(function() {
-        $("#confirmWindow").hide();
-        confirmOpen = false;
+        if(leaveConfirm.nowOpen){
+            leaveConfirm.no();
+        }else if(editConfirm.nowOpen){
+            editConfirm.no();
+        }
     });
 
     $("#search-button").click(function(){
@@ -162,7 +210,7 @@ $(function(){
     $("#search").on("click", ".search-join", function(){
         $(".search-join").attr("disabled",true);
         let guildName = $(this).attr("id");
-        guildName = guildName.substr(5)
+        guildName = guildName.substr(5);
 
         $.post('https://Guild/join', JSON.stringify({
             name : guildName
@@ -172,7 +220,7 @@ $(function(){
     
     $("#search").on("click", ".search-information", function(){
         let guildName = $(this).attr("id");
-        guildName = guildName.substr(12)
+        guildName = guildName.substr(12);
 
         $(".content").removeClass('selected');
         $(".menuButton").removeClass('btnSelected');
@@ -234,9 +282,11 @@ function setupInformation(guild,selfGuild){
     $("#information-ranking table tbody").html(buf);
 
     if(selfGuild){
+        $("#editGuild").show();
         $("#leaveGuild").show();
     }
     else{
+        $("#editGuild").hide();
         $("#leaveGuild").hide();
     }
 }
@@ -265,4 +315,20 @@ function setupRanking(){
         }
     }
     $("#ranking table tbody").html(buf);
+}
+
+function setupMember(guild){
+    let member = guild.member;
+    buf = "";
+    for(let i=0; i<member.length; i++)
+    {
+        if(member[i]){
+            buf = buf + '<tr><td class = "member-num">'+(i+1)+'</td> <td class = "member-name">'+ member[i].name+'</td> <td class = "member-grade">'+ member[i].grade+'</td> <td class = "member-point">'+ member[i].point+'</td> </tr>';
+        }
+        else
+        {
+            buf = buf + '<tr><td class = "member-num">'+(i+1)+'</td> <td class = "member-name"></td><td class = "member-grade"></td> <td class = "member-point"></td> </tr>';
+        }
+    }
+    $("#member table tbody").html(buf);
 }

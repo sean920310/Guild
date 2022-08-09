@@ -86,7 +86,8 @@ function Guild:leave()
     end)
 end
 
-function Guild:modify(name,data)
+function Guild:modify(data)
+    local name = self.data.guild.name
     ESX.TriggerServerCallback("Guild:modify", function(error) 
         if error then
             chat(error,{255,0,0})
@@ -94,38 +95,31 @@ function Guild:modify(name,data)
             if Config.debug then
                 print(error)
             end
+            TriggerServerEvent("Guild:server:onChange")
+            TriggerEvent("Guild:client:onChange")
         else
             TriggerServerEvent("Guild:server:onChange")
             TriggerEvent("Guild:client:onChange")
         end
-    end, name,data)
+    end, name ,data)
 end
 
 function Guild:setupNUI()
+    local player = self.data.player
+    player.level = exports.xperience.GetRank()
+
     if self.data.guild then
         SendNUIMessage({
             type = 'setup',
-            selfName = self.data.player.name,
-            selfLv = exports.xperience.GetRank(),
-            information = {
-                name = self.data.guild.name,
-                level = self.data.guild.level,
-                point = self.data.guild.point,
-                players = self.data.guild.players,
-                comment = self.data.guild.comment
-            },
-            member = {
-                member = self.data.guild.member
-            },
+            player = player,
+            guild = self.data.guild,
             list = self.data.list
         })
     else
         SendNUIMessage({
             type = 'setup',
-            selfName = self.data.player.name,
-            selfLv = exports.xperience.GetRank(),
-            information = nil,
-            member = nil,
+            player = player,
+            guild = nil,
             list = self.data.list
         })
     end
@@ -153,6 +147,16 @@ end)
 
 RegisterNUICallback("leave", function(data)
     Guild:leave()
+end)
+
+RegisterNUICallback("edit", function(data)
+    if Guild.data.guild.name == data.name then
+        data.name = nil;
+    end
+    Guild:modify({
+        name = data.name,
+        comment = data.comment
+    })
 end)
 
 --------------------------------------------------------------------------------------

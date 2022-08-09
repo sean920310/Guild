@@ -238,7 +238,12 @@ function Guild:modify(name, data)
                 self.list[i].players = data.players
             end
             if data.name then
+                if match[data.name] then
+                    return "The guild name already exist"
+                end
                 self.list[i].name = data.name
+                match[data.name] = match[name]
+                match[name] = nil
             end
             if data.level then
                 self.list[i].level = data.level
@@ -248,9 +253,10 @@ function Guild:modify(name, data)
             end
 
             MySQL.Async.execute('UPDATE `guild_list` SET `players`= @players,`name` = @newname, `level` = @level, `comment` = @comment WHERE `name` = @name', {["@name"] = name, ["@players"] = self.list[i].players, ["@newname"] = self.list[i].name, ["@level"] = self.list[i].level, ["@comment"] = self.list[i].comment}, nil)
+            MySQL.Async.execute('UPDATE `guild_player` SET `guild` = @newname WHERE `guild` = @name', {["@name"] = name, ["@newname"] = self.list[i].name}, nil)
             
             if Config.debug then
-                print(name.."modify to: "..self.list[i].name .. " | Lv." .. self.list[i].level .. " | players:" .. self.list[i].players.. " | comment:"..self.list[i].comment)
+                print(name.." modify to: "..self.list[i].name .. " | Lv." .. self.list[i].level .. " | players:" .. self.list[i].players.. " | comment:"..self.list[i].comment)
             end
             return false
         end
