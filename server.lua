@@ -34,7 +34,7 @@ function Guild:init()
         if Config.debug then
             print("GUILD:")
             for i=1, #self.list do
-                print("^3"..self.list[i].name .. " | Lv." .. self.list[i].level .. " | point:" .. self.list[i].point .." | players:" .. self.list[i].players.. " | comment:"..self.list[i].comment.."^7")
+                print("^3"..self.list[i].name .. " | Lv." .. self.list[i].level .. " | point:" .. self.list[i].point .. " | chairman:" .. self.list[i].chairman .." | players:" .. self.list[i].players.. " | comment:"..self.list[i].comment.."^7")
             end
         end
         listReady = true
@@ -283,7 +283,10 @@ end)
 
 --------------------------------------------------------------------------------------
 
-RegisterCommand("reloadGuild", function() Guild:init() end, true)
+RegisterCommand("reloadGuild", function() 
+    Guild:init() 
+    TriggerClientEvent("Guild:client:onChange", -1)
+end, true)
 
 RegisterNetEvent("Guild:server:onChange")
 AddEventHandler("Guild:server:onChange",function ()

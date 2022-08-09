@@ -195,6 +195,7 @@ function setupInformation(guild,selfGuild){
     $("#information-name").text(guild.name);
     $("#information-point").text(guild.point);
     $("#information-players").text(guild.players);
+    $("#information-chairman").text(guild.chairman);
     $("#information-comment").text(guild.comment);
         
     let buf = "";
@@ -260,7 +261,7 @@ function setupRanking(){
     for(let i=0; i<data.ranking.length; i++)
     {
         if(data.ranking[i]){
-            buf = buf + '<tr><td>'+(i+1)+'</td> <td>'+ data.ranking[i].name+'</td> <td>'+ data.ranking[i].point+'</td> </tr>';
+            buf = buf + '<tr><td>'+(i+1)+'</td> <td>'+ data.ranking[i].name+'</td> <td>'+ data.ranking[i].chairman+'</td> <td>'+ data.ranking[i].point+'</td> </tr>';
         }
     }
     $("#ranking table tbody").html(buf);
