@@ -210,9 +210,8 @@ body {
     padding: 0px 10px;
     height: 100px;
     width: 710px;
-    word-break: break-all;
-    word-wrap: break-word;
     white-space: pre-line;
+    overflow-y: auto;
     border: 1px solid white;
     border-radius: 5px;
     background-color: rgb(33,33,33);
