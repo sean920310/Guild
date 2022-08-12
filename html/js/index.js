@@ -1,5 +1,41 @@
+//===========================config===========================
+let htmlDebug = true;
 let keyCode = 'KeyK';
-let htmlDebug = false;
+let gradePermission = [
+    {
+        name: "申請中",
+        editGuild: false,
+        joinApply: false,
+        kickMember: false
+    },
+    {
+        name: "成員",
+        editGuild: false,
+        joinApply: false,
+        kickMember: false
+    },
+    {
+        name: "秘書",
+        editGuild: false,
+        joinApply: true,
+        kickMember: true
+    },
+    {
+        name: "副會長",
+        editGuild: false,
+        joinApply: true,
+        kickMember: true
+    },
+    {
+        name: "會長",
+        editGuild: true,
+        joinApply: true,
+        kickMember: true
+    }
+]
+
+//============================================================
+
 let hasGuild = htmlDebug;
 let data = {};
 data.list = [];
@@ -21,7 +57,7 @@ function display(bool) {
         $("#container").hide();
 }
 
-display(htmlDebug);//false
+display(htmlDebug);
 
 $(function(){
     window.addEventListener("message",function(event){
@@ -42,7 +78,7 @@ $(function(){
                 setupInformation(data.guild,true);
 
                 //member
-                setupMember(data.guild);
+                setupMember(data.guild,true);
 
                 hasGuild = true;
             }
@@ -189,6 +225,11 @@ $(function(){
         }
     });
 
+    $("#join-apply").click(function() {
+        $(".content").removeClass('selected');
+        $("#content-member-apply").addClass('selected');
+    });
+
     $("#search-button").click(function(){
         let input = $("#search-input").val();
 
@@ -317,7 +358,7 @@ function setupRanking(){
     $("#ranking table tbody").html(buf);
 }
 
-function setupMember(guild){
+function setupMember(guild,selfGuild){
     let member = guild.member;
     buf = "";
     for(let i=0; i<member.length; i++)
@@ -331,4 +372,14 @@ function setupMember(guild){
         }
     }
     $("#member table tbody").html(buf);
+
+    if(selfGuild){
+        if(gradePermission[data.player.grade].joinApply){
+            $("#join-apply").show();
+            $("join-apply-num").text(data.guild.apply.length)
+        }
+        else{
+            $("#join-apply").hide();
+        }
+    }
 }

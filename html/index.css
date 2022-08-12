@@ -264,6 +264,45 @@ body {
 
 /* ------------------member------------------ */
 
+#content-member{
+    position: relative;
+}
+
+#join-apply{
+    position: absolute;
+    right: 10px;
+    top: 0px;
+    border: 0.1px solid rgb(200,200,200);
+    height: 27px;
+    width: 70px;
+    border-radius: 5px;
+}
+
+#join-apply:hover{
+    background-color: rgb(200,200,200);
+}
+
+#join-apply:active{
+    box-shadow: inset 2px 2px 5px 0 rgba(0, 0, 0, .4);
+}
+
+#join-apply-num{
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    font-size: 5px;
+    padding: 0px 4px;
+    border-radius: 50%;
+    background: red;
+    color: white;
+    transition: 0.1s;
+}
+
+#join-apply:hover #join-apply-num{
+    top: -10px;
+    transition: 0.1s;
+}
+
 #member{
     height: 500px;
     margin: 10px;
@@ -315,6 +354,101 @@ body {
 #member tbody td{
     border-bottom: 1px solid rgb(100,100,100);
 }
+
+#member tbody tr:hover{
+    background-color: rgb(100, 100, 100);
+}
+
+/* ------------------member-apply------------------ */
+
+#member-apply{
+    height: 500px;
+    margin: 10px;
+    padding: 0 20px;
+    border: 1px solid white;
+    background-color: rgb(44,44,44);
+    border-radius: 10px;
+    box-shadow: inset 0px -10px 15px -5px rgba(255, 255, 255, .3);
+    overflow-y: auto;
+}
+
+#member-apply table{
+    width: 100%;
+    color: white;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+#member-apply table thead{
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    color: rgb(200,200,200);
+}
+
+#member-apply th:first-child,
+#member-apply tbody td:first-child{
+    width: 50px;
+}
+
+#member-apply table tbody{
+    width: 100%;
+    height: 465px;
+    display: block;
+    overflow-y: auto;
+}
+
+#member-apply table tr{
+    display: table;
+    width: 100%;
+    height: 30px;
+    table-layout: fixed;
+}
+
+#member-apply tbody td:first-child{
+    color: rgb(160,160,160);
+}
+
+#member-apply tbody td{
+    border-bottom: 1px solid rgb(100,100,100);
+}
+
+#member-apply th:last-child,
+#member-apply tbody td:last-child{
+    width: 100px;
+}
+
+.apply-yes,
+.apply-no{
+    display: block;
+    width: 80px;
+    margin: 5px;
+    color: white;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+.apply-yes{
+    background-color: rgb(50, 150, 50);
+}
+
+.apply-no{
+    background-color: rgb(230, 70, 50);
+}
+
+.apply-yes:hover{
+    background-color: rgb(10, 110, 10);
+}
+
+.apply-no:hover{
+    background-color: rgb(190, 50, 30);
+}
+
+.apply-yes:active,
+.apply-no:active{
+    box-shadow: inset 2px 2px 5px 0 rgba(0, 0, 0, .4);
+}
+
 
 /* ------------------ranking------------------ */
 
@@ -439,10 +573,6 @@ body {
 
 #search tbody td:first-child{
     color: rgb(160,160,160);
-}
-
-#search tbody td:last-child{
-    text-align: center;
 }
 
 #search tbody tr td{

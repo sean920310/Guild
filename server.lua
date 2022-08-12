@@ -24,7 +24,10 @@ function Guild:init()
         end
 
         for i=1, #self.list do
-            --初始化每個公會的成員table
+            --初始化每個公會申請加入的table
+            self.list[i].apply = {}
+
+            --初始化每個公會成員的table
             self.list[i].member = {}
 
             --創建可以用公會名稱取得index的table
@@ -49,8 +52,15 @@ function Guild:init()
             for i=1, #collect do
                 if collect[i].guild then
                     --取得目標公會的成員table
-                    local targetTable = self.list[match[collect[i].guild]].member
-                    table.insert(targetTable,#targetTable+1,collect[i])
+                    if collect[i].grade~=0 then
+                        --成員
+                        local targetTable = self.list[match[collect[i].guild]].member
+                        table.insert(targetTable,#targetTable+1,collect[i])
+                    else
+                        --申請中
+                        local targetTable = self.list[match[collect[i].guild]].apply
+                        table.insert(targetTable,#targetTable+1,collect[i])
+                    end
                 end
             end
             
@@ -60,6 +70,13 @@ function Guild:init()
                     print("\t"..self.list[i].name..":")
                     for j=1,#self.list[i].member do
                         print("\t\t".. self.list[i].member[j].name.." | Grade:"..self.list[i].member[j].grade)
+                    end
+                end
+                print("APPLY:")
+                for i=1, #self.list do
+                    print("\t"..self.list[i].name..":")
+                    for j=1,#self.list[i].apply do
+                        print("\t\t".. self.list[i].apply[j].name.." | Grade:"..self.list[i].apply[j].grade)
                     end
                 end
             end
@@ -90,8 +107,14 @@ function Guild:load(source)
         --讀取舊資料
         if collect[1] then
             data.player = collect[1]
+            data.player.apply = nil
             name = collect[1].guild
-            xPlayer.set("guild",name)
+            if collect[1].grade~=0 then
+                xPlayer.set("guild",name)
+            else
+                data.player.apply = name
+                name = nil
+            end
 
             data.list = self.list
 
@@ -146,12 +169,13 @@ function Guild:new(name, comment)
         level = 1,
         players = 0,
         comment = comment,
-        member = {}
+        member = {},
+        apply = {}
     })
     match[name] = #self.list
 
 
-    MySQL.Async.execute('INSERT INTO `guild_list` (`name`,`level`,`point`,`players`, `comment`) VALUES (@name,1,0,0,@comment)', {['name'] = name,['comment'] = comment}, nil)
+    MySQL.Async.execute('INSERT INTO `guild_list` (`name`,`level`,`point`,`players`, `comment`, `apply`) VALUES (@name,1,0,0,@comment,"[]")', {['name'] = name,['comment'] = comment}, nil)
 
     if Config.debug then
         print("New guild: "..self.list[#self.list].name)
