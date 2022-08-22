@@ -384,7 +384,7 @@ function setupMember(guild,selfGuild){
     for(let i=0; i<member.length; i++)
     {
         if(member[i]){
-            buf = buf + '<tr><td class = "member-num">'+(i+1)+'</td> <td class = "member-name">'+ member[i].name+'</td> <td class = "member-grade">'+ member[i].grade+'</td> <td class = "member-point">'+ member[i].point+'</td> </tr>';
+            buf = buf + '<tr><td class = "member-num">'+(i+1)+'</td> <td class = "member-name">'+ member[i].name+'</td> <td class = "member-grade">'+ gradePermission[member[i].grade].name+'</td> <td class = "member-point">'+ member[i].point+'</td> </tr>';
         }
         else
         {
