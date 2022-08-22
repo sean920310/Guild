@@ -1,5 +1,5 @@
 //===========================config===========================
-let htmlDebug = true;
+let htmlDebug = false;
 let keyCode = 'KeyK';
 let gradePermission = [
     {
@@ -374,9 +374,19 @@ function setupMember(guild,selfGuild){
     $("#member table tbody").html(buf);
 
     if(selfGuild){
+        let apply = guild.apply
+        buf = "";
+        for(let i=0; i<apply.length; i++)
+        {
+            if(apply[i]){
+                buf = buf + '<tr><td class = "apply-num">'+(i+1)+'</td> <td class = "apply-name">'+ apply[i].name+'</td> <td class = "apply-job">'+ apply[i].job+'</td> <td class = "apply-rank">'+ apply[i].rank+'</td> <td><button class="apply-yes">接受</button><button class="apply-no">拒絕</button></td></tr>';
+            }
+        }
+        $("#member-apply table tbody").html(buf);
+
         if(gradePermission[data.player.grade].joinApply){
             $("#join-apply").show();
-            $("join-apply-num").text(data.guild.apply.length)
+            $("#join-apply-num").text(apply.length)
         }
         else{
             $("#join-apply").hide();

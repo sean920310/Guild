@@ -50,6 +50,17 @@ function Guild:init()
     MySQL.Async.fetchAll('SELECT * FROM `guild_player`',{}, function(collect)
         if collect[1] then
             for i=1, #collect do
+                local sync = false
+                MySQL.Async.fetchAll('SELECT `job`,`rank` FROM `users` WHERE `identifier`=@identifier;', {['@identifier'] = collect[i].identifier}, function(user)
+                    if user[1] then
+                        collect[i].rank = user[1].rank
+                        collect[i].job = user[1].job
+                    end
+                    sync = true
+                end)
+                while not sync do
+                    Wait(5)
+                end
                 if collect[i].guild then
                     --取得目標公會的成員table
                     if collect[i].grade~=0 then
@@ -76,7 +87,7 @@ function Guild:init()
                 for i=1, #self.list do
                     print("\t"..self.list[i].name..":")
                     for j=1,#self.list[i].apply do
-                        print("\t\t".. self.list[i].apply[j].name.." | Grade:"..self.list[i].apply[j].grade)
+                        print("\t\t".. self.list[i].apply[j].name.." | Rank:"..self.list[i].apply[j].rank)
                     end
                 end
             end
@@ -126,15 +137,18 @@ function Guild:load(source)
 
         else
             --新增資料
-            MySQL.Async.execute('INSERT INTO `guild_player` (`identifier`,`name`,`guild`, `point`, `grade`) VALUES (@identifier,@name,NULL,0,1);', {['@identifier'] = identifier,['@name']=xPlayer.getName()}, nil)
+            MySQL.Async.execute('INSERT INTO `guild_player` (`identifier`,`name`,`guild`, `point`, `grade`) VALUES (@identifier,@name,NULL,0,0);', {['@identifier'] = identifier,['@name']=xPlayer.getName()}, nil)
             xPlayer.set("guild",nil)
 
             data.player = {
                 identifier = identifier,
                 name = xPlayer.getName(),
                 guild = nil,
+                apply= nil,
                 point = 0,
-                grade = 0
+                grade = 0,
+                job = xPlayer.get("job"),
+                rank = xPlayer.get("rank")
             }
             data.guild = nil
 

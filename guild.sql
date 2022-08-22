@@ -1,5 +1,6 @@
 CREATE TABLE `guild_list` (
 	`name` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_bin',
+	`chairman` varchar(50) NOT NULL,
 	`level` INT(11) NULL DEFAULT '1',
 	`point` INT(11) NULL DEFAULT '0',
 	`players` INT(11) NULL DEFAULT '0',
