@@ -120,6 +120,9 @@ function Guild:modify(data)
 end
 
 function Guild:setupNUI()
+    if not self.data then
+        self:load()
+    end
     local player = self.data.player
     player.level = exports.xperience.GetRank()
 
@@ -198,6 +201,11 @@ AddEventHandler("xperience:client:rankDown",function()
     Guild:setupNUI()
 end)
 
+RegisterNetEvent("esx:playerLoaded",function()
+    Citizen.Wait(1000)
+    Guild:load()
+end)
+
 --------------------------------------------------------------------------------------
 
 RegisterCommand("newGuild", function(source,args) Guild:new(args[1],table.concat(args," ",2)) end)
@@ -218,9 +226,7 @@ end)
 
 --------------------------------------------------------------------------------------
 
-Citizen.CreateThread(function()
-    Guild:load()
-    
+Citizen.CreateThread(function()    
     while true do
         Citizen.Wait(0)
         
