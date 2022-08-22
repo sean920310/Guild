@@ -86,6 +86,21 @@ function Guild:leave()
     end)
 end
 
+function Guild:apply(identifier,accept)
+    ESX.TriggerServerCallback("Guild:apply", function(error) 
+        if error then
+            chat(error,{255,0,0})
+
+            if Config.debug then
+                print(error)
+            end
+        else
+            TriggerServerEvent("Guild:server:onChange")
+            TriggerEvent("Guild:client:onChange")
+        end
+    end, identifier, accept)
+end
+
 function Guild:modify(data)
     local name = self.data.guild.name
     ESX.TriggerServerCallback("Guild:modify", function(error) 
@@ -157,6 +172,10 @@ RegisterNUICallback("edit", function(data)
         name = data.name,
         comment = data.comment
     })
+end)
+
+RegisterNUICallback("apply", function(data)
+    Guild:apply(data.identifier,data.accept)
 end)
 
 --------------------------------------------------------------------------------------

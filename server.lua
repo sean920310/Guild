@@ -47,6 +47,7 @@ function Guild:init()
         Wait(5)
     end
 
+    local playerReady = false
     MySQL.Async.fetchAll('SELECT * FROM `guild_player`',{}, function(collect)
         if collect[1] then
             for i=1, #collect do
@@ -92,7 +93,11 @@ function Guild:init()
                 end
             end
         end
+        playerReady = true
     end)
+    while not playerReady do
+        Wait(5)
+    end
 end
 
 function Guild:load(source)
@@ -265,6 +270,41 @@ function Guild:leave(source)
     return "Couldn't find the guild "..name
 end
 
+function Guild:apply(source, identifier, accept)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local name = xPlayer.get("guild")
+
+    if not name then
+        return "Is not in any guild" 
+    end
+
+    local guild = self.list[match[name]]
+    if guild then
+       for i = 1, #guild.apply do
+            if guild.apply[i].identifier == identifier then
+                if accept then
+                    local targetPlayer = guild.apply[i]
+                    targetPlayer.grade = 1
+                    targetPlayer.point = 0
+                    
+                    guild.players = guild.players+1
+                    table.insert(guild.member,#guild.member,targetPlayer)
+                    table.remove(guild.apply,i)
+                    MySQL.Async.execute('UPDATE `guild_player` SET `grade` = 1, `point` = 0 WHERE identifier = @identifier', {["@identifier"] = identifier}, nil)
+                else
+                    table.remove(guild.apply,i)
+                    MySQL.Async.execute('UPDATE `guild_player` SET `guild` = NULL, `grade` = 0, `point` = 0 WHERE identifier = @identifier', {["@identifier"] = identifier}, nil)
+                end
+
+                MySQL.Async.execute('UPDATE `guild_list` SET `players`= @players WHERE `name` = @name', {["@name"] = name, ["@players"] = guild.players}, nil)
+                return false
+            end
+       end
+    end
+
+    return "Couldn't find the guild "..name
+end
+
 function Guild:modify(name, data)
     if name == nil then
         return "Guild name is nil"
@@ -315,6 +355,10 @@ end)
 
 ESX.RegisterServerCallback("Guild:leave",function(source,cb)
     cb(Guild:leave(source))
+end)
+
+ESX.RegisterServerCallback("Guild:apply",function(source,cb,identifier,accept)
+    cb(Guild:apply(source,identifier,accept))
 end)
 
 ESX.RegisterServerCallback("Guild:modify",function(source,cb,name,data)

@@ -230,6 +230,26 @@ $(function(){
         $("#content-member-apply").addClass('selected');
     });
 
+    $("#content-member-apply").on("click",".apply-yes", function(){
+        let identifier = $(this).attr("id");
+        identifier = identifier.substr(10);
+
+        $.post('https://Guild/apply', JSON.stringify({
+            identifier : identifier,
+            accept : true
+        }));
+    });
+
+    $("#content-member-apply").on("click",".apply-no", function(){
+        let identifier = $(this).attr("id");
+        identifier = identifier.substr(9);
+
+        $.post('https://Guild/apply', JSON.stringify({
+            identifier : identifier,
+            accept : false
+        }));
+    });
+
     $("#search-button").click(function(){
         let input = $("#search-input").val();
 
@@ -379,7 +399,7 @@ function setupMember(guild,selfGuild){
         for(let i=0; i<apply.length; i++)
         {
             if(apply[i]){
-                buf = buf + '<tr><td class = "apply-num">'+(i+1)+'</td> <td class = "apply-name">'+ apply[i].name+'</td> <td class = "apply-job">'+ apply[i].job+'</td> <td class = "apply-rank">'+ apply[i].rank+'</td> <td><button class="apply-yes">接受</button><button class="apply-no">拒絕</button></td></tr>';
+                buf = buf + '<tr><td class = "apply-num">'+(i+1)+'</td> <td class = "apply-name">'+ apply[i].name+'</td> <td class = "apply-job">'+ apply[i].job+'</td> <td class = "apply-rank">'+ apply[i].rank+'</td> <td><button class="apply-yes" id="apply-yes-'+apply[i].identifier+'">接受</button><button class="apply-no" id="apply-no-'+apply[i].identifier+'">拒絕</button></td></tr>';
             }
         }
         $("#member-apply table tbody").html(buf);
