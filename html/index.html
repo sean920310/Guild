@@ -122,7 +122,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr class="memberRow">
                                     <td>1</td>
                                     <td>阿呆</td>
                                     <td>公會長</td>
@@ -151,7 +151,7 @@
                                 <tr>
                                     <td>1</td>
                                     <td>阿呆</td>
-                                    <th>刺客</th>
+                                    <td>刺客</td>
                                     <td>999</td>
                                     <td>
                                         <button class="apply-yes">接受</button>
@@ -239,6 +239,22 @@
             <button id="confirm-button-yes">是</button>
             <button id="confirm-button-no">否</button>
         </div>
+    </div>
+    <div id="memberOption" style="display:none">
+        <ul>
+            <li id="member-changeGrade"><span>更改職位</span><span>▶</span>
+                <div id="member-changeGrade-option">
+                    <ul>
+                        <li class="changeGrade" id="member-grade-4">會長</li>
+                        <li class="changeGrade" id="member-grade-3">副會長</li>
+                        <li class="changeGrade" id="member-grade-2">秘書</li>
+                        <li class="changeGrade" id="member-grade-1">成員</li>
+                    </ul>
+                </div>
+            </li>
+            <li id="member-chat">私訊</li>
+            <li id="member-kick">踢除</li>
+        </ul>
     </div>
     <script src="./js/class.confirmBox.js" type="text/javascript"></script>
     <script src="./js/index.js" type="text/javascript"></script>

@@ -358,6 +358,63 @@ body {
     background-color: rgb(100, 100, 100);
 }
 
+#memberOption{
+    position: absolute;
+    font-size: 10px;
+    text-align: center;
+    padding-bottom: 7px;
+    padding-top: 7px;
+    background: lightgray;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+#memberOption ul {
+    padding: 0px;
+    margin: 0px;
+    min-width: 100px;
+    list-style: none;
+}
+
+#memberOption ul li {
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+#memberOption ul li:hover {
+    background: darkgray;
+}
+
+#member-changeGrade:hover #member-changeGrade-option{
+    display: block;
+}
+
+#member-changeGrade{
+    position: relative;
+}
+
+#member-changeGrade span:nth-child(2){
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#member-changeGrade-option{
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: 100%;
+    font-size: 10px;
+    text-align: center;
+    padding-bottom: 7px;
+    padding-top: 7px;
+    background: lightgray;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+
 /* ------------------member-apply------------------ */
 
 #member-apply{

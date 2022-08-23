@@ -1,5 +1,5 @@
 //===========================config===========================
-let htmlDebug = false;
+let htmlDebug = true;
 let keyCode = 'KeyK';
 let gradePermission = [
     {
@@ -230,6 +230,43 @@ $(function(){
         $("#content-member-apply").addClass('selected');
     });
 
+    $("#member").on("click",".memberRow",function(e){
+        // let identifier = $(this).attr("id");
+        // identifier = identifier.substr(7);
+        let toggle=true;
+        e.preventDefault();
+        if ($("#memberOption").css("display") == "none"){
+            $("#memberOption").show();
+        }
+        document.onclick = function(){
+            if(!toggle){
+                $("#memberOption").hide();
+            }
+            toggle=false;
+        }
+        $("#memberOption").css("left",e.pageX+"px");
+        $("#memberOption").css("top",e.pageY+"px");
+
+        $(".changeGrade").click(function(){
+            let grade = $(this).id();
+            grade = grade.substr(13)
+            $.post('https://Guild/changeGrade', JSON.stringify({
+                identifier : identifier,
+                grade : Number(grade)
+            }));
+        });
+        $("#member-chat").click(function(){
+            $.post('https://Guild/chat', JSON.stringify({
+                identifier : identifier
+            }));
+        });
+        $("#member-kick").click(function(){
+            $.post('https://Guild/kick', JSON.stringify({
+                identifier : identifier
+            }));
+        });
+    });
+
     $("#content-member-apply").on("click",".apply-yes", function(){
         let identifier = $(this).attr("id");
         identifier = identifier.substr(10);
@@ -384,11 +421,7 @@ function setupMember(guild,selfGuild){
     for(let i=0; i<member.length; i++)
     {
         if(member[i]){
-            buf = buf + '<tr><td class = "member-num">'+(i+1)+'</td> <td class = "member-name">'+ member[i].name+'</td> <td class = "member-grade">'+ gradePermission[member[i].grade].name+'</td> <td class = "member-point">'+ member[i].point+'</td> </tr>';
-        }
-        else
-        {
-            buf = buf + '<tr><td class = "member-num">'+(i+1)+'</td> <td class = "member-name"></td><td class = "member-grade"></td> <td class = "member-point"></td> </tr>';
+            buf = buf + '<tr id="member-'+member[i].identifier+'"><td class = "member-num">'+(i+1)+'</td> <td class = "member-name">'+ member[i].name+'</td> <td class = "member-grade">'+ gradePermission[member[i].grade].name+'</td> <td class = "member-point">'+ member[i].point+'</td> </tr>';
         }
     }
     $("#member table tbody").html(buf);
