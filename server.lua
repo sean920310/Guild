@@ -130,6 +130,7 @@ function Guild:load(source)
             else
                 data.player.apply = name
                 name = nil
+                xPlayer.set("guild",name)
             end
 
             data.list = self.list
@@ -282,6 +283,7 @@ function Guild:apply(source, identifier, accept)
     if guild then
        for i = 1, #guild.apply do
             if guild.apply[i].identifier == identifier then
+                local tempName = guild.apply[i].name
                 if accept then
                     local targetPlayer = guild.apply[i]
                     targetPlayer.grade = 1
@@ -291,12 +293,21 @@ function Guild:apply(source, identifier, accept)
                     table.insert(guild.member,#guild.member,targetPlayer)
                     table.remove(guild.apply,i)
                     MySQL.Async.execute('UPDATE `guild_player` SET `grade` = 1, `point` = 0 WHERE identifier = @identifier', {["@identifier"] = identifier}, nil)
+                    
+                    if Config.debug then
+                        print(name.." | "..xPlayer.getName().." accept "..tempName.." apply")
+                    end
                 else
                     table.remove(guild.apply,i)
                     MySQL.Async.execute('UPDATE `guild_player` SET `guild` = NULL, `grade` = 0, `point` = 0 WHERE identifier = @identifier', {["@identifier"] = identifier}, nil)
+                    
+                    if Config.debug then
+                        print(name.." | "..xPlayer.getName().." reject "..tempName.." apply")
+                    end
                 end
 
                 MySQL.Async.execute('UPDATE `guild_list` SET `players`= @players WHERE `name` = @name', {["@name"] = name, ["@players"] = guild.players}, nil)
+                
                 return false
             end
        end
@@ -343,6 +354,74 @@ function Guild:modify(name, data)
     return "Couldn't find the guild "..name
 end
 
+function Guild:kick(source,identifier)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local name = xPlayer.get("guild")
+
+    if not name then
+        return "Is not in any guild" 
+    end
+
+    local guild = self.list[match[name]]
+    if guild then
+       for i = 1, #guild.member do
+            if guild.member[i].identifier == identifier then
+                local tempName = guild.member[i].name
+                table.remove(guild.member,i)
+                guild.players = guild.players-1
+
+                MySQL.Async.execute('UPDATE `guild_player` SET `guild` = NULL, `grade` = 0, `point` = 0 WHERE identifier = @identifier', {["@identifier"] = identifier}, nil)
+                MySQL.Async.execute('UPDATE `guild_list` SET `players`= @players WHERE `name` = @name', {["@name"] = name, ["@players"] = guild.players}, nil)
+                
+                if Config.debug then
+                    print(name.." | "..xPlayer.getName().." kick "..tempName)
+                end
+
+                return false
+            end
+       end
+    end
+
+    return "Couldn't find the guild "..name
+end
+
+function Guild:changeGrade(source,identifier,grade)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local name = xPlayer.get("guild")
+
+    if not name then
+        return "Is not in any guild" 
+    end
+
+    local guild = self.list[match[name]]
+    if guild then
+       for i = 1, #guild.member do
+            if guild.member[i].identifier == identifier then
+                if grade == 4 then
+                    for j = 1, #guild.member do
+                        if guild.member[j].grade == 4 then
+                            guild.member[j].grade = 3
+                            guild.chairman = guild.member[i].name
+                            MySQL.Async.execute('UPDATE `guild_player` SET `grade` = 3 WHERE identifier = @identifier', {["@identifier"] = guild.member[j].identifier}, nil)
+                            MySQL.Async.execute('UPDATE `guild_list` SET `chairman`= @chairman WHERE `name` = @name', {["@name"] = name, ["@chairman"] = guild.member[i].name}, nil)
+                        end
+                    end
+                end
+                guild.member[i].grade = grade
+                MySQL.Async.execute('UPDATE `guild_player` SET `grade` = @grade WHERE identifier = @identifier', {["@identifier"] = identifier,["@grade"] = grade}, nil)
+                
+                if Config.debug then
+                    print(name.." | "..xPlayer.getName().." change "..guild.member[i].name.." grade to "..grade)
+                end
+
+                return false
+            end
+       end
+    end
+
+    return "Couldn't find the guild "..name
+end
+
 --------------------------------------------------------------------------------------
 
 ESX.RegisterServerCallback("Guild:new",function(source,cb,name,comment)
@@ -363,6 +442,14 @@ end)
 
 ESX.RegisterServerCallback("Guild:modify",function(source,cb,name,data)
     cb(Guild:modify(name,data))
+end)
+
+ESX.RegisterServerCallback("Guild:kick",function(source,cb,identifier)
+    cb(Guild:kick(source,identifier))
+end)
+
+ESX.RegisterServerCallback("Guild:changeGrade",function(source,cb,identifier,grade)
+    cb(Guild:changeGrade(source,identifier,grade))
 end)
 
 ESX.RegisterServerCallback("Guild:load",function(source,cb)

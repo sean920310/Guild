@@ -119,6 +119,40 @@ function Guild:modify(data)
     end, name ,data)
 end
 
+function Guild:changeGrade(identifier,grade)
+    ESX.TriggerServerCallback("Guild:changeGrade", function(error) 
+        if error then
+            chat(error,{255,0,0})
+
+            if Config.debug then
+                print(error)
+            end
+        else
+            TriggerServerEvent("Guild:server:onChange")
+            TriggerEvent("Guild:client:onChange")
+        end
+    end, identifier,grade)
+end
+
+function Guild:chat(identifier)
+    
+end
+
+function Guild:kick(identifier)
+    ESX.TriggerServerCallback("Guild:kick", function(error) 
+        if error then
+            chat(error,{255,0,0})
+
+            if Config.debug then
+                print(error)
+            end
+        else
+            TriggerServerEvent("Guild:server:onChange")
+            TriggerEvent("Guild:client:onChange")
+        end
+    end, identifier)
+end
+
 function Guild:setupNUI()
     if not self.data then
         self:load()
@@ -181,6 +215,18 @@ RegisterNUICallback("apply", function(data)
     Guild:apply(data.identifier,data.accept)
 end)
 
+RegisterNUICallback("changeGrade", function(data)
+    Guild:changeGrade(data.identifier,data.grade)
+end)
+
+RegisterNUICallback("chat", function(data)
+    Guild:chat(data.identifier)
+end)
+
+RegisterNUICallback("kick", function(data)
+    Guild:kick(data.identifier)
+end)
+
 --------------------------------------------------------------------------------------
 
 RegisterNetEvent("Guild:client:onChange")
@@ -217,10 +263,14 @@ RegisterCommand("leaveGuild", function() Guild:leave() end)
 RegisterCommand("modifyGuild", function(source,args,data) Guild:modify(args[1],data) end)
 
 exports("getGuild",function() 
-    if Guild.data.guild then
-        return Guild.data.guild.name
+    if Guild.data then
+        if Guild.data.guild then
+            return Guild.data.guild.name
+        else
+            return nil
+        end
     else
-        return nil
+        print("Guild load error")        
     end
 end)
 

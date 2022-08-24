@@ -1,36 +1,41 @@
 //===========================config===========================
-let htmlDebug = true;
+let htmlDebug = false;
 let keyCode = 'KeyK';
 let gradePermission = [
     {
         name: "申請中",
         editGuild: false,
         joinApply: false,
-        kickMember: false
+        kickMember: false,
+        changeGrade: false
     },
     {
         name: "成員",
         editGuild: false,
         joinApply: false,
-        kickMember: false
+        kickMember: false,
+        changeGrade: false
     },
     {
         name: "秘書",
         editGuild: false,
         joinApply: true,
-        kickMember: true
+        kickMember: true,
+        changeGrade: false
     },
     {
         name: "副會長",
         editGuild: false,
         joinApply: true,
-        kickMember: true
+        kickMember: true,
+        changeGrade: false
     },
     {
         name: "會長",
         editGuild: true,
         joinApply: true,
-        kickMember: true
+        kickMember: true,
+        changeGrade: true
     }
 ]
 
@@ -112,7 +117,7 @@ $(function(){
         if(hasGuild && !editingGuild){
             
             let page = $(this).attr("id");
-            page = page.substr(5);
+            page = page.substring(5);
 
             if(page == "information"&& !htmlDebug){
                 setupInformation(data.guild,true);
@@ -225,14 +230,38 @@ $(function(){
         }
     });
 
+    //member apply page click
     $("#join-apply").click(function() {
         $(".content").removeClass('selected');
         $("#content-member-apply").addClass('selected');
     });
 
+    //click a member show option list 
+    let identifier="";
     $("#member").on("click",".memberRow",function(e){
-        // let identifier = $(this).attr("id");
-        // identifier = identifier.substr(7);
+        //show the
+        if(!htmlDebug){
+            identifier = $(this).attr("id");
+            identifier = identifier.substring(7); 
+            
+            showChangeGrade = function (bool) {
+                if(bool)
+                    $("#member-changeGrade").show();
+                else
+                    $("#member-changeGrade").hide();
+            }
+            showKick = function (bool) {
+                if(bool)
+                    $("#member-kick").show();
+                else
+                    $("#member-kick").hide();
+            }
+            
+            showChangeGrade(gradePermission[data.player.grade].changeGrade);
+            showKick(gradePermission[data.player.grade].kickMember);
+        }
+
+        //show memberOption
         let toggle=true;
         e.preventDefault();
         if ($("#memberOption").css("display") == "none"){
@@ -247,29 +276,38 @@ $(function(){
         $("#memberOption").css("left",e.pageX+"px");
         $("#memberOption").css("top",e.pageY+"px");
 
-        $(".changeGrade").click(function(){
-            let grade = $(this).id();
-            grade = grade.substr(13)
-            $.post('https://Guild/changeGrade', JSON.stringify({
-                identifier : identifier,
-                grade : Number(grade)
-            }));
-        });
-        $("#member-chat").click(function(){
-            $.post('https://Guild/chat', JSON.stringify({
-                identifier : identifier
-            }));
-        });
-        $("#member-kick").click(function(){
-            $.post('https://Guild/kick', JSON.stringify({
-                identifier : identifier
-            }));
-        });
+        //if choose it self don't show
+        if(identifier==data.player.identifier){
+            $("#memberOption").hide();
+        }
     });
-
+    //memberOption click event
+    $(".changeGrade").click(function(){
+        $("#memberOption").hide();
+        let grade = $(this).attr("id");
+        grade = grade.substring(13)
+        $.post('https://Guild/changeGrade', JSON.stringify({
+            identifier : identifier,
+            grade : Number(grade)
+        }));
+    });
+    $("#member-chat").click(function(){
+        $("#memberOption").hide();
+        $.post('https://Guild/chat', JSON.stringify({
+            identifier : identifier
+        }));
+    });
+    $("#member-kick").click(function(){
+        $("#memberOption").hide();
+        $.post('https://Guild/kick', JSON.stringify({
+            identifier : identifier
+        }));
+    });
+    
+    //member apply yes
     $("#content-member-apply").on("click",".apply-yes", function(){
         let identifier = $(this).attr("id");
-        identifier = identifier.substr(10);
+        identifier = identifier.substring(10);
 
         $.post('https://Guild/apply', JSON.stringify({
             identifier : identifier,
@@ -277,9 +315,10 @@ $(function(){
         }));
     });
 
+    //member apply no
     $("#content-member-apply").on("click",".apply-no", function(){
         let identifier = $(this).attr("id");
-        identifier = identifier.substr(9);
+        identifier = identifier.substring(9);
 
         $.post('https://Guild/apply', JSON.stringify({
             identifier : identifier,
@@ -287,6 +326,7 @@ $(function(){
         }));
     });
 
+    //search
     $("#search-button").click(function(){
         let input = $("#search-input").val();
 
@@ -305,20 +345,21 @@ $(function(){
         $(".search-join").attr("disabled",hasGuild);
     });
 
+    //search join click
     $("#search").on("click", ".search-join", function(){
         $(".search-join").attr("disabled",true);
         let guildName = $(this).attr("id");
-        guildName = guildName.substr(5);
+        guildName = guildName.substring(5);
 
         $.post('https://Guild/join', JSON.stringify({
             name : guildName
         }));
     });
 
-    
+    //search information click
     $("#search").on("click", ".search-information", function(){
         let guildName = $(this).attr("id");
-        guildName = guildName.substr(12);
+        guildName = guildName.substring(12);
 
         $(".content").removeClass('selected');
         $(".menuButton").removeClass('btnSelected');
@@ -421,7 +462,7 @@ function setupMember(guild,selfGuild){
     for(let i=0; i<member.length; i++)
     {
         if(member[i]){
-            buf = buf + '<tr id="member-'+member[i].identifier+'"><td class = "member-num">'+(i+1)+'</td> <td class = "member-name">'+ member[i].name+'</td> <td class = "member-grade">'+ gradePermission[member[i].grade].name+'</td> <td class = "member-point">'+ member[i].point+'</td> </tr>';
+            buf = buf + '<tr class="memberRow" id="member-'+member[i].identifier+'"><td class = "member-num">'+(i+1)+'</td> <td class = "member-name">'+ member[i].name+'</td> <td class = "member-grade">'+ gradePermission[member[i].grade].name+'</td> <td class = "member-point">'+ member[i].point+'</td> </tr>';
         }
     }
     $("#member table tbody").html(buf);
