@@ -263,7 +263,6 @@ $(function(){
 
         //show memberOption
         let toggle=true;
-        e.preventDefault();
         if ($("#memberOption").css("display") == "none"){
             $("#memberOption").show();
         }
@@ -462,7 +461,7 @@ function setupMember(guild,selfGuild){
     for(let i=0; i<member.length; i++)
     {
         if(member[i]){
-            buf = buf + '<tr class="memberRow" id="member-'+member[i].identifier+'"><td class = "member-num">'+(i+1)+'</td> <td class = "member-name">'+ member[i].name+'</td> <td class = "member-grade">'+ gradePermission[member[i].grade].name+'</td> <td class = "member-point">'+ member[i].point+'</td> </tr>';
+            buf = buf + '<tr class="memberRow" id="member-'+member[i].identifier+'"><td class = "member-num">'+(i+1)+'</td> <td class = "member-name">'+ member[i].name+'</td> <td class = "member-job">'+ member[i].job+'</td> <td class = "member-rank">'+ member[i].rank+'</td> <td class = "member-grade">'+ gradePermission[member[i].grade].name+'</td> <td class = "member-point">'+ member[i].point+'</td> </tr>';
         }
     }
     $("#member table tbody").html(buf);

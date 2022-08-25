@@ -12,7 +12,7 @@ MySQL.ready(function()
     MySQLReady = true
 end)
 
-function Guild:init()
+function Guild:init(debug)
     while not MySQLReady do
         Wait(5)
     end
@@ -34,7 +34,7 @@ function Guild:init()
             match[self.list[i].name] = i
         end
 
-        if Config.debug then
+        if Config.debug and debug then
             print("GUILD:")
             for i=1, #self.list do
                 print("^3"..self.list[i].name .. " | Lv." .. self.list[i].level .. " | point:" .. self.list[i].point .. " | chairman:" .. self.list[i].chairman .." | players:" .. self.list[i].players.. " | comment:"..self.list[i].comment.."^7")
@@ -76,7 +76,7 @@ function Guild:init()
                 end
             end
             
-            if Config.debug then
+            if Config.debug and debug then
                 print("MEMBER:")
                 for i=1, #self.list do
                     print("\t"..self.list[i].name..":")
@@ -130,7 +130,7 @@ function Guild:load(source)
             else
                 data.player.apply = name
                 name = nil
-                xPlayer.set("guild",name)
+                xPlayer.set("guild",nil)
             end
 
             data.list = self.list
@@ -214,21 +214,20 @@ function Guild:join(source, name)
 
     for i=1, #self.list do
         if self.list[i].name == name then
-            self.list[i].players = self.list[i].players + 1
-            table.insert(self.list[i].member,#self.list[i].member+1,{
+            table.insert(self.list[i].apply,#self.list[i].apply+1,{
                 identifier = xPlayer.getIdentifier(),
                 name = xPlayer.getName(),
-                guild = name,
+                guild = nil,
+                apply = name,
                 point = 0,
-                grade = 1
+                grade = 0
             })
 
-            xPlayer.set('guild',name)
-            MySQL.Async.execute('UPDATE `guild_list` SET `players`= @players WHERE `name` = @name', {["@name"] = name, ["@players"] = self.list[i].players}, nil)
-            MySQL.Async.execute('UPDATE `guild_player` SET `guild` = @guild, `grade` = 1 WHERE identifier = @identifier', {["@identifier"] = xPlayer.getIdentifier(),["@guild"] = name}, nil)
+            xPlayer.set('guild',nil)
+            MySQL.Async.execute('UPDATE `guild_player` SET `guild` = @guild, `grade` = 0 WHERE identifier = @identifier', {["@identifier"] = xPlayer.getIdentifier(),["@guild"] = name}, nil)
             
             if Config.debug then
-                print(xPlayer.getName().." join "..name)
+                print(xPlayer.getName().." wants to join "..name)
             end
 
             return false
@@ -459,18 +458,19 @@ end)
 --------------------------------------------------------------------------------------
 
 RegisterCommand("reloadGuild", function() 
-    Guild:init() 
+    Guild:init(false) 
     TriggerClientEvent("Guild:client:onChange", -1)
 end, true)
 
 RegisterNetEvent("Guild:server:onChange")
 AddEventHandler("Guild:server:onChange",function ()
+    Guild:init(false) 
     TriggerClientEvent("Guild:client:onChange", -1)
 end)
 
 --------------------------------------------------------------------------------------
 
 CreateThread(function()
-    Guild:init()
+    Guild:init(true)
 end)
 
