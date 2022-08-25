@@ -1,5 +1,5 @@
 //===========================config===========================
-let htmlDebug = false;
+let htmlDebug = true;
 let keyCode = 'KeyK';
 let gradePermission = [
     {
@@ -45,13 +45,11 @@ let hasGuild = htmlDebug;
 let data = {};
 data.list = [];
 data.ranking = [];
-let leaveConfirm = new ConfirmBox("確認是否要退出",()=>{
-    $.post('https://Guild/leave', JSON.stringify({}));
-    $(".content").removeClass('selected');
-    $(".menuButton").removeClass('btnSelected');
-},()=>{});
-
-let editConfirm;
+let confirmBoxData = {
+    text:"",
+    yesCallBack:()=>{},
+    noCallBack:()=>{},
+    isOpen:false};
 
 let editingGuild = false;
 
@@ -143,7 +141,7 @@ $(function(){
             if(editingGuild){
                 $("#editGuild").trigger( "click" );
             }
-            else if(ConfirmBox.isOpen){
+            else if(confirmBoxData.isOpen){
                 $("#confirm-button-no").trigger( "click" );
             }
             else{
@@ -152,7 +150,7 @@ $(function(){
             }
         }
         if (event.code === keyCode) {
-            if(!ConfirmBox.isOpen&&!editingGuild){ 
+            if(!confirmBoxData.isOpen&&!editingGuild){ 
                 $.post('https://Guild/close', JSON.stringify({}));
                 display(false);
             }
@@ -183,18 +181,22 @@ $(function(){
             }
 
             if(originComment!=editComment||originName!=editName){
-                editConfirm = new ConfirmBox("是否要儲存編輯",()=>{
-                    data.guild.name = editName;
-                    data.guild.comment = editComment;
-                    $.post('https://Guild/edit', JSON.stringify({
-                        name : editName,
-                        comment : editComment
-                    }));
-                },()=>{
-                    $("#information-name").text(data.guild.name);
-                    $("#information-comment").text(data.guild.comment);
-                });
-                editConfirm.open();
+                confirmBoxData = {
+                    text:"是否要儲存編輯",
+                    yesCallBack:()=>{
+                        data.guild.name = editName;
+                        data.guild.comment = editComment;
+                        $.post('https://Guild/edit', JSON.stringify({
+                            name : editName,
+                            comment : editComment
+                        }));
+                    },
+                    noCallBack:()=>{
+                        $("#information-name").text(data.guild.name);
+                        $("#information-comment").text(data.guild.comment);
+                    },
+                    isOpen:false};
+                ConfirmBox(confirmBoxData);
             }
             $("#information-name").text(editName);
             $("#information-comment").text(editComment);
@@ -209,25 +211,16 @@ $(function(){
     });
 
     $("#leaveGuild").click(function() {
-        if(!editingGuild){
-            leaveConfirm.open();
-        }
-    });
-
-    $("#confirm-button-yes").click(function() {
-        if(leaveConfirm.nowOpen){
-            leaveConfirm.yes();
-        }else if(editConfirm.nowOpen){
-            editConfirm.yes();
-        }
-    });
-
-    $("#confirm-button-no").click(function() {
-        if(leaveConfirm.nowOpen){
-            leaveConfirm.no();
-        }else if(editConfirm.nowOpen){
-            editConfirm.no();
-        }
+        confirmBoxData = {
+            text:"確認是否要退出",
+            yesCallBack:()=>{
+                $.post('https://Guild/leave', JSON.stringify({}));
+                $(".content").removeClass('selected');
+                $(".menuButton").removeClass('btnSelected');
+            },
+            noCallBack:()=>{},
+            isOpen:false};
+        ConfirmBox(confirmBoxData);
     });
 
     //member apply page click

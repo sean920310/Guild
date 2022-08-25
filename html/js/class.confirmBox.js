@@ -1,31 +1,25 @@
-class ConfirmBox {
-    constructor(text,yesCallBack,noCallBack){
-        this.text = text;
-        this.nowOpen = false;
-        this.yesCallBack = yesCallBack;
-        this.noCallBack = noCallBack;
-    }
+function ConfirmBox(data) {
+    //open
+    $("#confirm-text").text(data.text)
+    $("#confirmWindow").show();
+    data.isOpen = true;
     
-    static isOpen = false;
 
-    open(){
-        $("#confirm-text").text(this.text)
-        $("#confirmWindow").show();
-        ConfirmBox.isOpen = true;
-        this.nowOpen = true;
-    }
-
-    yes(){
-        this.yesCallBack();
+    //yes
+    $("#confirm-button-yes").on("click",function() {
+        data.yesCallBack();
         $("#confirmWindow").hide();
-        ConfirmBox.isOpen = false;
-        this.nowOpen = false;
-    }
-
-    no(){
-        this.noCallBack();
+        data.isOpen = false;
+        $("#confirm-button-yes").off();
+        $("#confirm-button-no").off();
+    });
+    
+    //no
+    $("#confirm-button-no").on("click",function() {
+        data.noCallBack();
         $("#confirmWindow").hide();
-        ConfirmBox.isOpen = false;
-        this.nowOpen = false;
-    }
+        data.isOpen = false;
+        $("#confirm-button-yes").off();
+        $("#confirm-button-no").off();
+    });
 }
