@@ -2,6 +2,7 @@
 
 <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="index.css" type="text/css">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <!-- <script src="nui://game/ui/jquery.js" type="text/javascript"></script> -->
@@ -102,6 +103,21 @@
                         <button id="editGuild">編輯公會</button>
                     </div>
                     <button id="leaveGuild">退出公會</button>
+                </div>
+                <div class="content" id="content-upgrade">
+                    <div>
+                        公會升級
+                    </div>
+                    <div id="upgrade">
+                        <div id="upgrade-money"><span class="fa-solid fa-coins"></span><span>10,000</span></div>
+                        <div id="upgrade-point"><span class="fa-solid fa-hand-holding-hand"></span><span>999,999</span></div>
+                        <div id="upgrade-information">
+                            <div>下次升級所需:</div>
+                            <div><span>金幣:</span><span id="need-money">45,000</span><span> 公會貢獻度:</span><span id="need-point">15,000</span></div>
+                            <div><span>當前公會等級:</span><span id="upgrade-lv">Lv.3</span><span>當前人數:</span><span id="upgrade-players">3/25</span></div>
+                        </div>
+                        <button id="upgradeButton">升級公會</button>
+                    </div>
                 </div>
                 <div class="content" id="content-member">
                     <div>
