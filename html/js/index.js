@@ -7,35 +7,40 @@ let gradePermission = [
         editGuild: false,
         joinApply: false,
         kickMember: false,
-        changeGrade: false
+        changeGrade: false,
+        upgradeGuild: false
     },
     {
         name: "成員",
         editGuild: false,
         joinApply: false,
         kickMember: false,
-        changeGrade: false
+        changeGrade: false,
+        upgradeGuild: false
     },
     {
         name: "秘書",
         editGuild: false,
         joinApply: true,
         kickMember: true,
-        changeGrade: false
+        changeGrade: false,
+        upgradeGuild: false
     },
     {
         name: "副會長",
         editGuild: false,
         joinApply: true,
         kickMember: true,
-        changeGrade: false
+        changeGrade: false,
+        upgradeGuild: true
     },
     {
         name: "會長",
         editGuild: true,
         joinApply: true,
         kickMember: true,
-        changeGrade: true
+        changeGrade: true,
+        upgradeGuild: true
     }
 ]
 
@@ -63,6 +68,7 @@ function display(bool) {
 display(htmlDebug);
 
 $(function(){
+    //event
     window.addEventListener("message",function(event){
         let item = event.data
         if (item.type === "open") {
@@ -91,6 +97,7 @@ $(function(){
                 hasGuild = false;
             }
 
+            //self info
             $("#self-name").text(item.player.name);
             $("#self-lv").text("Lv."+item.player.level);
 
@@ -111,6 +118,7 @@ $(function(){
         }
     });
     
+    //side menu btn click
     $(".menuButton").click(function () {
         if(hasGuild && !editingGuild){
             
@@ -128,6 +136,7 @@ $(function(){
         }
     });
     
+    //find guild btn click
     $("#findGuild").click(function(){
         if(!editingGuild){
             $(".content").removeClass('selected');
@@ -167,7 +176,8 @@ $(function(){
         }
     });
 
-    $("#editGuild").click(function () { 
+    //edit guild btn click
+    $("#editGuild").click(function () {
         let originName = data.guild.name;
         let originComment = data.guild.comment;
         if(editingGuild){
@@ -201,15 +211,37 @@ $(function(){
             $("#information-name").text(editName);
             $("#information-comment").text(editComment);
             $("#editGuild").text("編輯公會");
+            if(gradePermission[data.player.grade].editGuild){
+                $("#editGuild").show();
+            }else{
+                $("#editGuild").hide();
+            }
+            if(gradePermission[data.player.grade].upgradeGuild){
+                $("#upgradeGuild").show();
+            }else{
+                $("#upgradeGuild").hide();
+            }
         }
         else{
             $("#editGuild").text("結束編輯");
             $("#information-name").html('<input id="newGuildName" value="'+ originName +'">')
             $("#information-comment").html('<textarea id="newGuildComment">' + originComment +'</textarea>')
+            $("#upgradeGuild").hide();
+            $("#leaveGuild").hide();
         }
         editingGuild = !editingGuild;
     });
 
+    //upgrade guild btn click
+    $("#upgradeGuild").click(function () {
+        if(!editingGuild){
+            $(".content").removeClass('selected');
+            $(".menuButton").removeClass('btnSelected');
+            $("#content-upgrade").addClass('selected');
+        }
+    });
+
+    //leave guild btn click
     $("#leaveGuild").click(function() {
         confirmBoxData = {
             text:"確認是否要退出",
@@ -273,6 +305,7 @@ $(function(){
             $("#memberOption").hide();
         }
     });
+
     //memberOption click event
     $(".changeGrade").click(function(){
         $("#memberOption").hide();
@@ -413,7 +446,16 @@ function setupInformation(guild,selfGuild){
     $("#information-ranking table tbody").html(buf);
 
     if(selfGuild){
-        $("#editGuild").show();
+        if(gradePermission[data.player.grade].editGuild){
+            $("#editGuild").show();
+        }else{
+            $("#editGuild").hide();
+        }
+        if(gradePermission[data.player.grade].upgradeGuild){
+            $("#upgradeGuild").show();
+        }else{
+            $("#upgradeGuild").hide();
+        }
         $("#leaveGuild").show();
     }
     else{

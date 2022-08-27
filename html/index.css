@@ -227,6 +227,7 @@ body {
     margin: 10px;
     border: 0.1px solid rgb(200,200,200);
     border-radius: 5px;
+    box-shadow: inset -1px -1px 5px rgba(0, 0, 0, .4);
 }
 
 #editGuild:hover{
@@ -234,6 +235,26 @@ body {
 }
 
 #editGuild:active{
+    box-shadow: inset 2px 2px 5px 0 rgba(0, 0, 0, .4);
+}
+
+#upgradeGuild{
+    display: block; 
+    position: absolute;
+    right: 0%;
+    top: 60px;
+    width: max-content;
+    margin: 10px;
+    border: 0.1px solid rgb(200,200,200);
+    border-radius: 5px;
+    box-shadow: inset -1px -1px 5px rgba(0, 0, 0, .4);
+}
+
+#upgradeGuild:hover{
+    background-color: rgb(200, 200, 200);
+}
+
+#upgradeGuild:active{
     box-shadow: inset 2px 2px 5px 0 rgba(0, 0, 0, .4);
 }
 
