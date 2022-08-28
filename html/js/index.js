@@ -1,5 +1,5 @@
 //===========================config===========================
-let htmlDebug = true;
+let htmlDebug = false;
 let keyCode = 'KeyK';
 let gradePermission = [
     {
@@ -43,6 +43,10 @@ let gradePermission = [
         upgradeGuild: true
     }
 ]
+let upgradeCost = {
+    money: 15000,
+    point: 5000
+}
 
 //============================================================
 
@@ -241,6 +245,10 @@ $(function(){
         }
     });
 
+    $('#upgradeButton').click(function() {
+        $.post('https://Guild/upgrade', JSON.stringify({}));
+    });
+
     //leave guild btn click
     $("#leaveGuild").click(function() {
         confirmBoxData = {
@@ -405,8 +413,8 @@ $(function(){
 
 function setupInformation(guild,selfGuild){
     $("#information-name").text(guild.name);
-    $("#information-point").text(guild.point);
-    $("#information-players").text(guild.players);
+    $("#information-point").text(Number(guild.point).toLocaleString('en'));
+    $("#information-players").text(String(guild.players) + '/' + String(Math.floor((guild.level-1)/3)*5 + 20));
     $("#information-chairman").text(guild.chairman);
     $("#information-comment").text(guild.comment);
         
@@ -418,9 +426,9 @@ function setupInformation(guild,selfGuild){
                 for(let j=i-1;j<i+2;j++){
                     if(data.ranking[j]){
                         if(j==i)
-                            buf = buf + '<tr style="background-color: rgb(60,60,60);"><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point+'</td> </tr>';
+                            buf = buf + '<tr style="background-color: rgb(60,60,60);"><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point.toLocaleString('en')+'</td> </tr>';
                         else
-                            buf = buf + '<tr><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point+'</td> </tr>';
+                            buf = buf + '<tr><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point.toLocaleString('en')+'</td> </tr>';
                     }
                     else{
                         buf = buf + '<tr><td>'+(j+1)+'</td> <td></td> <td></td> </tr>';
@@ -431,9 +439,9 @@ function setupInformation(guild,selfGuild){
                 for(let j=0;j<3;j++){
                     if(data.ranking[j]){
                         if(!j)
-                            buf = buf + '<tr style="background-color: rgb(60,60,60);"><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point+'</td> </tr>';
+                            buf = buf + '<tr style="background-color: rgb(60,60,60);"><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point.toLocaleString('en')+'</td> </tr>';
                         else
-                            buf = buf + '<tr><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point+'</td> </tr>';
+                            buf = buf + '<tr><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point.toLocaleString('en')+'</td> </tr>';
                     }
                     else{
                         buf = buf + '<tr><td>'+(j+1)+'</td> <td></td> <td></td> </tr>';
@@ -453,6 +461,22 @@ function setupInformation(guild,selfGuild){
         }
         if(gradePermission[data.player.grade].upgradeGuild){
             $("#upgradeGuild").show();
+            //upgrade information setup
+            $('#upgrade-money span:nth-child(2)').text(guild.money);
+            $('#upgrade-point span:nth-child(2)').text(guild.point);
+            $('#upgrade-lv').text('Lv.'+guild.level);
+            $('#upgrade-players').text(String(guild.players) + '/' + String(Math.floor((guild.level-1)/3)*5 + 20));
+
+            let moneyCost = upgradeCost.money * guild.level;
+            let pointCost = upgradeCost.point * guild.level;
+            $('#need-money').text(moneyCost);
+            $('#need-point').text(pointCost);
+
+            if(guild.point<pointCost || guild.money<moneyCost){
+                $('#upgradeButton').attr("disabled",true);
+            }else{
+                $('#upgradeButton').attr("disabled",false);
+            }
         }else{
             $("#upgradeGuild").hide();
         }
@@ -484,7 +508,7 @@ function setupRanking(){
     for(let i=0; i<data.ranking.length; i++)
     {
         if(data.ranking[i]){
-            buf = buf + '<tr><td>'+(i+1)+'</td> <td>'+ data.ranking[i].name+'</td> <td>'+ data.ranking[i].chairman+'</td> <td>'+ data.ranking[i].point+'</td> </tr>';
+            buf = buf + '<tr><td>'+(i+1)+'</td> <td>'+ data.ranking[i].name+'</td> <td>'+ data.ranking[i].chairman+'</td> <td>'+ data.ranking[i].point.toLocaleString('en')+'</td> </tr>';
         }
     }
     $("#ranking table tbody").html(buf);

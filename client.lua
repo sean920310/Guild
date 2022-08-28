@@ -153,6 +153,21 @@ function Guild:kick(identifier)
     end, identifier)
 end
 
+function Guild:upgrade()
+    ESX.TriggerServerCallback("Guild:upgrade", function(error) 
+        if error then
+            chat(error,{255,0,0})
+
+            if Config.debug then
+                print(error)
+            end
+        else
+            TriggerServerEvent("Guild:server:onChange")
+            TriggerEvent("Guild:client:onChange")
+        end
+    end)
+end
+
 function Guild:setupNUI()
     if not self.data then
         self:load()
@@ -225,6 +240,10 @@ end)
 
 RegisterNUICallback("kick", function(data)
     Guild:kick(data.identifier)
+end)
+
+RegisterNUICallback("upgrade", function(data)
+    Guild:upgrade()
 end)
 
 --------------------------------------------------------------------------------------

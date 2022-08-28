@@ -493,7 +493,8 @@ body {
     position: relative;
 }
 
-#member-changeGrade span:nth-child(2){
+#member-changeGrade::after{
+    content: "▶";
     position: absolute;
     right: 2px;
     top: 50%;

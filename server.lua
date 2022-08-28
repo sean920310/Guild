@@ -37,7 +37,7 @@ function Guild:init(debug)
         if Config.debug and debug then
             print("GUILD:")
             for i=1, #self.list do
-                print("^3"..self.list[i].name .. " | Lv." .. self.list[i].level .. " | point:" .. self.list[i].point .. " | chairman:" .. self.list[i].chairman .." | players:" .. self.list[i].players.. " | comment:"..self.list[i].comment.."^7")
+                print("^3"..self.list[i].name .. " | Lv." .. self.list[i].level .. " | point:" .. self.list[i].point .. " | money:" .. self.list[i].money .. " | chairman:" .. self.list[i].chairman .." | players:" .. self.list[i].players.. " | comment:"..self.list[i].comment.."^7")
             end
         end
         listReady = true
@@ -421,6 +421,39 @@ function Guild:changeGrade(source,identifier,grade)
     return "Couldn't find the guild "..name
 end
 
+function Guild:upgrade(source)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local name = xPlayer.get("guild")
+
+    if not name then
+        return "Is not in any guild" 
+    end
+
+    local guild = self.list[match[name]]
+    if guild then
+        local moneyCost = Config.upgradeCost.money * guild.level
+        local pointCost = Config.upgradeCost.point * guild.level
+        if guild.money < moneyCost then
+            return "Not enough money"
+        end
+        if guild.point < pointCost then
+            return "Not enough point"
+        end
+        guild.money = guild.money - moneyCost
+        guild.point = guild.point - pointCost
+        guild.level = guild.level + 1
+
+        MySQL.Async.execute('UPDATE `guild_list` SET `level`= @level,`point`= @point,`money`= @money WHERE `name` = @name', {["@name"] = name, ["@level"] = guild.level, ["@point"] = guild.point, ["@money"] = guild.money}, nil)
+    
+        if Config.debug then
+            print(name.." upgrade to "..guild.level)
+        end
+        return false
+    end
+
+    return "Couldn't find the guild "..name
+end
+
 --------------------------------------------------------------------------------------
 
 ESX.RegisterServerCallback("Guild:new",function(source,cb,name,comment)
@@ -449,6 +482,10 @@ end)
 
 ESX.RegisterServerCallback("Guild:changeGrade",function(source,cb,identifier,grade)
     cb(Guild:changeGrade(source,identifier,grade))
+end)
+
+ESX.RegisterServerCallback("Guild:upgrade",function(source,cb)
+    cb(Guild:upgrade(source))
 end)
 
 ESX.RegisterServerCallback("Guild:load",function(source,cb)
