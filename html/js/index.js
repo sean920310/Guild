@@ -1,5 +1,5 @@
 //===========================config===========================
-let htmlDebug = false;
+let htmlDebug = true;
 let keyCode = 'KeyK';
 let gradePermission = [
     {

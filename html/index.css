@@ -292,6 +292,7 @@ body {
     border: 1px solid white;
     background-color: rgb(55,55,55);
     border-radius: 10px;
+    box-shadow: inset 0px 10px 15px -5px rgba(255, 255, 255, .4);
 }
 
 #upgrade-topBar{
@@ -324,6 +325,8 @@ body {
     height: 400px;
     margin: 10px;
     padding: 0px 10px;
+    background-image: url(asset/img/upgrade.png);
+    background-size: auto;
     border: 1px solid white;
     border-radius: 10px;
 }
@@ -611,6 +614,147 @@ body {
     box-shadow: inset 2px 2px 5px 0 rgba(0, 0, 0, .4);
 }
 
+/* ------------------skill------------------ */
+
+#skill{
+    position: relative;
+    height: 500px;
+    margin: 10px;
+    padding: 0 20px;
+    border: 1px solid white;
+    background-color: rgb(55,55,55);
+    border-radius: 10px;
+    box-shadow: inset 0px 10px 15px -5px rgba(255, 255, 255, .4);
+}
+
+.skill-container{
+    height: 130px;
+    width: 120px;
+    border: 1px solid white;
+    border-radius: 10px;
+}
+
+.skill-img{
+    height: 120px;
+    width: 120px;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
+    border-bottom: 1px solid white;
+}
+
+#skill-XP{
+    position: absolute;
+    top: 50px;
+    left: 20px;
+}
+
+#skill-XP .skill-img{
+    background-image: url(asset/img/skill-xp.png);
+    background-size: auto;
+}
+
+#skill-attack{
+    position: absolute;
+    top: 50px;
+    left: 270px;
+}
+
+#skill-treasure{
+    position: absolute;
+    top: 50px;
+    left: 520px;
+}
+
+#skill-defense{
+    position: absolute;
+    top: 250px;
+    left: 120px;
+}
+
+#skill-recoverHP{
+    position: absolute;
+    top: 250px;
+    left: 370px;
+}
+
+#skill-recoverMP{
+    position: absolute;
+    top: 250px;
+    left: 620px;
+}
+
+.skill-container:hover .tip{
+    display: block;
+}
+
+.tip{
+    display: none;
+    position: relative;
+    font-size: 12px;
+    padding: 0px 5px;
+    top: -40px;
+    left: 120px;
+    border: 1px solid white;
+    background-color: rgba(0, 0, 0, .6);
+}
+
+.tip>div:first-child{
+    border-bottom: 1px solid white;
+}
+
+#tip-recoverMP{
+    left: -120px;
+}
+
+.skill-progressBar{
+    height: 10px;
+    background-color: greenyellow;
+    transition-property: width;
+    transition-duration: 2s;
+}
+
+#progress-0{
+    width: 0%;
+    border-bottom-left-radius: inherit;
+}
+
+#progress-1{
+    width: 20%;
+    border-bottom-left-radius: inherit;
+}
+
+#progress-2{
+    width: 40%;
+    border-bottom-left-radius: inherit;
+}
+
+#progress-3{
+    width: 60%;
+    border-bottom-left-radius: inherit;
+}
+
+#progress-4{
+    width: 80%;
+    border-bottom-left-radius: inherit;
+}
+
+#progress-5{
+    width: 100%;
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+}
+
+.progressChange{
+    animation-name: progressBar-done;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+}
+
+@keyframes progressBar-done{
+    0%   {background-color: greenyellow;}
+    50%  {background-color: white;}
+    100% {background-color: greenyellow;}
+}
 
 /* ------------------ranking------------------ */
 
