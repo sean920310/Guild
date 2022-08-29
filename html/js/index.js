@@ -369,7 +369,7 @@ $(function(){
         {
             if(data.list[i]){
                 if(data.list[i].name.includes(input)){
-                    buf = buf + '<tr><td>'+(count)+'</td> <td>'+ data.list[i].name+'</td> <td>'+ data.list[i].players+'</td> <td>'+ data.list[i].point+'</td><td><button class="search-join" id="join-'+data.list[i].name+'">申請加入</button><button class="search-information" id="information-'+data.list[i].name+'">公會資訊</button></td> </tr>';
+                    buf = buf + '<tr><td>'+(count)+'</td> <td>'+ data.list[i].name+'</td> <td>'+ data.list[i].players+'</td> <td>'+ 'Lv.'+data.list[i].level+'</td> <td>'+ data.list[i].point+'</td><td><button class="search-join" id="join-'+data.list[i].name+'">申請加入</button><button class="search-information" id="information-'+data.list[i].name+'">公會資訊</button></td> </tr>';
                     count++;
                 }
             }
@@ -426,12 +426,12 @@ function setupInformation(guild,selfGuild){
                 for(let j=i-1;j<i+2;j++){
                     if(data.ranking[j]){
                         if(j==i)
-                            buf = buf + '<tr style="background-color: rgb(60,60,60);"><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point.toLocaleString('en')+'</td> </tr>';
+                            buf = buf + '<tr style="background-color: rgb(60,60,60);"><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ 'Lv.'+data.ranking[j].level+'</td> <td>'+ data.ranking[j].point.toLocaleString('en')+'</td> </tr>';
                         else
-                            buf = buf + '<tr><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point.toLocaleString('en')+'</td> </tr>';
+                            buf = buf + '<tr><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ 'Lv.'+data.ranking[j].level+'</td> <td>'+ data.ranking[j].point.toLocaleString('en')+'</td> </tr>';
                     }
                     else{
-                        buf = buf + '<tr><td>'+(j+1)+'</td> <td></td> <td></td> </tr>';
+                        buf = buf + '<tr><td>'+(j+1)+'</td> <td></td> <td></td> <td></td> </tr>';
                     }
                 }
             }
@@ -439,12 +439,12 @@ function setupInformation(guild,selfGuild){
                 for(let j=0;j<3;j++){
                     if(data.ranking[j]){
                         if(!j)
-                            buf = buf + '<tr style="background-color: rgb(60,60,60);"><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point.toLocaleString('en')+'</td> </tr>';
+                            buf = buf + '<tr style="background-color: rgb(60,60,60);"><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ 'Lv.'+data.ranking[j].level+'</td> <td>'+ data.ranking[j].point.toLocaleString('en')+'</td> </tr>';
                         else
-                            buf = buf + '<tr><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ data.ranking[j].point.toLocaleString('en')+'</td> </tr>';
+                            buf = buf + '<tr><td>'+(j+1)+'</td> <td>'+ data.ranking[j].name+'</td> <td>'+ 'Lv.'+data.ranking[j].level+'</td> <td>'+ data.ranking[j].point.toLocaleString('en')+'</td> </tr>';
                     }
                     else{
-                        buf = buf + '<tr><td>'+(j+1)+'</td> <td></td> <td></td> </tr>';
+                        buf = buf + '<tr><td>'+(j+1)+'</td> <td></td> <td></td> <td></td> </tr>';
                     }
                 }
             }
@@ -462,15 +462,15 @@ function setupInformation(guild,selfGuild){
         if(gradePermission[data.player.grade].upgradeGuild){
             $("#upgradeGuild").show();
             //upgrade information setup
-            $('#upgrade-money span:nth-child(2)').text(guild.money);
-            $('#upgrade-point span:nth-child(2)').text(guild.point);
+            $('#upgrade-money span:nth-child(2)').text(guild.money.toLocaleString('en'));
+            $('#upgrade-point span:nth-child(2)').text(guild.point.toLocaleString('en'));
             $('#upgrade-lv').text('Lv.'+guild.level);
             $('#upgrade-players').text(String(guild.players) + '/' + String(Math.floor((guild.level-1)/3)*5 + 20));
 
             let moneyCost = upgradeCost.money * guild.level;
             let pointCost = upgradeCost.point * guild.level;
-            $('#need-money').text(moneyCost);
-            $('#need-point').text(pointCost);
+            $('#need-money').text(moneyCost.toLocaleString('en'));
+            $('#need-point').text(pointCost.toLocaleString('en'));
 
             if(guild.point<pointCost || guild.money<moneyCost){
                 $('#upgradeButton').attr("disabled",true);
@@ -496,7 +496,7 @@ function setupRanking(){
         {
             let j = 0;
             for(; j<ranking.length; j++){
-                if(ranking[j].point<data.list[i].point)
+                if(ranking[j].level<data.list[i].level || (ranking[j].level===data.list[i].level&&ranking[j].point<data.list[i].point))
                     break;
             }
             ranking.splice(j,0,data.list[i]);
@@ -508,7 +508,7 @@ function setupRanking(){
     for(let i=0; i<data.ranking.length; i++)
     {
         if(data.ranking[i]){
-            buf = buf + '<tr><td>'+(i+1)+'</td> <td>'+ data.ranking[i].name+'</td> <td>'+ data.ranking[i].chairman+'</td> <td>'+ data.ranking[i].point.toLocaleString('en')+'</td> </tr>';
+            buf = buf + '<tr><td>'+(i+1)+'</td> <td>'+ data.ranking[i].name+'</td> <td>'+ data.ranking[i].chairman+'</td> <td>'+ 'Lv.'+data.ranking[i].level+'</td> <td>'+ data.ranking[i].point.toLocaleString('en')+'</td> </tr>';
         }
     }
     $("#ranking table tbody").html(buf);

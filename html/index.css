@@ -283,7 +283,7 @@ body {
     box-shadow: inset 2px 2px 5px 0 rgba(0, 0, 0, .4);
 }
 
-/* ------------------information------------------ */
+/* ------------------upgrade------------------ */
 
 #upgrade{
     position: relative;
@@ -294,15 +294,21 @@ body {
     border-radius: 10px;
 }
 
+#upgrade-topBar{
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    height: 40px;
+}
+
 #upgrade-money,
 #upgrade-point{
-    position: absolute;
-    top: 10px;
-    right: 20px;
+    position: relative;
+    top: 15px;
 }
 
 #upgrade-money{
-    right: 200px;
+    right: 20px;
 }
 
 #upgrade-money span:nth-child(2),
@@ -315,7 +321,6 @@ body {
 
 #upgrade-information{
     position: relative;
-    top: 40px;
     height: 400px;
     margin: 10px;
     padding: 0px 10px;
@@ -639,6 +644,11 @@ body {
     height: 465px;
     display: block;
     overflow-y: auto;
+}
+
+#ranking table th:first-child,
+#ranking table td:first-child{
+    width: 80px;
 }
 
 #ranking table tr{
