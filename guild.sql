@@ -5,6 +5,8 @@ CREATE TABLE `guild_list` (
 	`point` INT(11) NULL DEFAULT '0',
 	`money` INT(11) NULL DEFAULT '0',
 	`players` INT(11) NULL DEFAULT '0',
+	`skillPoint` INT(11) NULL DEFAULT '0',
+	`skill` LONGTEXT NULL DEFAULT '{"XP":0,"attack":0,"treasure":0,"defense":0,"recoverHP":0,"recoverMP":0}' COLLATE 'utf8mb4_bin',
 	`comment` LONGTEXT NULL DEFAULT '' COLLATE 'utf8mb4_bin',
 	PRIMARY KEY (`name`) USING BTREE
 )
