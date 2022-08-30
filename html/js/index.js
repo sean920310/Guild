@@ -93,6 +93,9 @@ $(function(){
                 //member
                 setupMember(data.guild,true);
 
+                //skill
+                setupSkill();
+
                 hasGuild = true;
             }
             else{
@@ -359,6 +362,16 @@ $(function(){
         }));
     });
 
+    //skill upgrade click
+    $(".skill-upgrade").click(function(){
+        let skill = $(this).attr("id");
+        skill = skill.substring(8);
+
+        $.post('https://Guild/skillUpgrade', JSON.stringify({
+            skill : skill
+        }));
+    });
+
     //search
     $("#search-button").click(function(){
         let input = $("#search-input").val();
@@ -543,5 +556,44 @@ function setupMember(guild,selfGuild){
         else{
             $("#join-apply").hide();
         }
+    }
+}
+
+function setupSkill(){
+    let skill = data.guild.skill;
+    $("#skill-point span:nth-child(2)").text(data.guild.skillPoint);
+    for (let i = 0; i <= 5; i++) {
+        $(".skill-progressBar").removeClass("progress-"+i);
+    }
+    $("#progress-XP").addClass("progress-"+skill.XP);
+    $("#progress-attack").addClass("progress-"+skill.attack);
+    $("#progress-treasure").addClass("progress-"+skill.treasure);
+    $("#progress-defense").addClass("progress-"+skill.defense);
+    $("#progress-recoverHP").addClass("progress-"+skill.recoverHP);
+    $("#progress-recoverMP").addClass("progress-"+skill.recoverMP);
+    
+    $(".skill-upgrade").attr("disabled", false);
+    if(data.guild.skillPoint<=0){
+        for (let i = 0; i <= 5; i++) {
+            $(".skill-upgrade").attr("disabled", true);
+        }
+    }
+    if(skill.XP>=5){
+        $("#upgrade-XP").attr("disabled", true);
+    }
+    if(skill.attack>=5){
+        $("#upgrade-attack").attr("disabled", true);
+    }
+    if(skill.treasure>=5){
+        $("#upgrade-treasure").attr("disabled", true);
+    }
+    if(skill.defense>=5){
+        $("#upgrade-defense").attr("disabled", true);
+    }
+    if(skill.recoverHP>=5){
+        $("#upgrade-recoverHP").attr("disabled", true);
+    }
+    if(skill.recoverMP>=5){
+        $("#upgrade-recoverMP").attr("disabled", true);
     }
 }

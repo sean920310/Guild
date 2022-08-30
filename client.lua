@@ -168,6 +168,21 @@ function Guild:upgrade()
     end)
 end
 
+function Guild:skillUpgrade(skill)
+    ESX.TriggerServerCallback("Guild:skillUpgrade", function(error) 
+        if error then
+            chat(error,{255,0,0})
+
+            if Config.debug then
+                print(error)
+            end
+        else
+            TriggerServerEvent("Guild:server:onChange")
+            TriggerEvent("Guild:client:onChange")
+        end
+    end,skill)
+end
+
 function Guild:setupNUI()
     if not self.data then
         self:load()
@@ -244,6 +259,10 @@ end)
 
 RegisterNUICallback("upgrade", function(data)
     Guild:upgrade()
+end)
+
+RegisterNUICallback("skillUpgrade", function(data)
+    Guild:skillUpgrade(data.skill)
 end)
 
 --------------------------------------------------------------------------------------

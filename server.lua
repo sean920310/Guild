@@ -24,6 +24,10 @@ function Guild:init(debug)
         end
 
         for i=1, #self.list do
+            --初始化每個公會技能的table
+            local skillTemp = self.list[i].skill
+            self.list[i].skill = json.decode(skillTemp)
+
             --初始化每個公會申請加入的table
             self.list[i].apply = {}
 
@@ -195,7 +199,7 @@ function Guild:new(name, comment)
     match[name] = #self.list
 
 
-    MySQL.Async.execute('INSERT INTO `guild_list` (`name`,`level`,`point`,`players`, `comment`, `apply`) VALUES (@name,1,0,0,@comment,"[]")', {['name'] = name,['comment'] = comment}, nil)
+    MySQL.Async.execute('INSERT INTO `guild_list` (`name`,`level`,`point`,`players`, `comment`) VALUES (@name,1,0,0,@comment)', {['name'] = name,['comment'] = comment}, nil)
 
     if Config.debug then
         print("New guild: "..self.list[#self.list].name)
@@ -454,6 +458,40 @@ function Guild:upgrade(source)
     return "Couldn't find the guild "..name
 end
 
+function Guild:skillUpgrade(source,skill)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local name = xPlayer.get("guild")
+
+    if not name then
+        return "Is not in any guild" 
+    end
+
+    local guild = self.list[match[name]]
+    if guild then
+        if guild.skillPoint <= 0 then
+            guild.skillPoint = 0
+            return "Not enough skill point"
+        end
+
+        if guild.skill[skill] >= 5 then
+            guild.skill[skill] = 5
+            return "Skill is already fully upgrade"
+        else
+            guild.skill[skill] = guild.skill[skill] + 1
+            guild.skillPoint = guild.skillPoint - 1
+        end
+
+        MySQL.Async.execute('UPDATE `guild_list` SET `skillPoint`= @skillPoint, `skill`= @skill WHERE `name` = @name', {["@name"] = name, ["@skillPoint"] = guild.skillPoint, ["@skill"] = json.encode(guild.skill)}, nil)
+    
+        if Config.debug then
+            print(name.." skill-"..skill.." upgrade")
+        end
+        return false
+    end
+
+    return "Couldn't find the guild "..name
+end
+
 --------------------------------------------------------------------------------------
 
 ESX.RegisterServerCallback("Guild:new",function(source,cb,name,comment)
@@ -486,6 +524,10 @@ end)
 
 ESX.RegisterServerCallback("Guild:upgrade",function(source,cb)
     cb(Guild:upgrade(source))
+end)
+
+ESX.RegisterServerCallback("Guild:skillUpgrade",function(source,cb,skill)
+    cb(Guild:skillUpgrade(source,skill))
 end)
 
 ESX.RegisterServerCallback("Guild:load",function(source,cb)

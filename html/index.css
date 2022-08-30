@@ -325,7 +325,7 @@ body {
     height: 400px;
     margin: 10px;
     padding: 0px 10px;
-    background-image: url(asset/img/upgrade.png);
+    background-image: url(asset/img/upgrade-5.png);
     background-size: auto;
     border: 1px solid white;
     border-radius: 10px;
@@ -627,6 +627,19 @@ body {
     box-shadow: inset 0px 10px 15px -5px rgba(255, 255, 255, .4);
 }
 
+#skill-point{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+#skill-point span:nth-child(2){
+    padding: 0px 20px;
+    margin: 0px 10px;
+    border: 1px solid white;
+    border-radius: 5px;
+}
+
 .skill-container{
     height: 130px;
     width: 120px;
@@ -659,10 +672,20 @@ body {
     left: 270px;
 }
 
+#skill-attack .skill-img{
+    background-image: url(asset/img/skill-attack.png);
+    background-size: auto;
+}
+
 #skill-treasure{
     position: absolute;
     top: 50px;
     left: 520px;
+}
+
+#skill-treasure .skill-img{
+    background-image: url(asset/img/skill-treasure.png);
+    background-size: auto;
 }
 
 #skill-defense{
@@ -671,16 +694,31 @@ body {
     left: 120px;
 }
 
+#skill-defense .skill-img{
+    background-image: url(asset/img/skill-defense.png);
+    background-size: auto;
+}
+
 #skill-recoverHP{
     position: absolute;
     top: 250px;
     left: 370px;
 }
 
+#skill-recoverHP .skill-img{
+    background-image: url(asset/img/skill-recoverHP.png);
+    background-size: auto;
+}
+
 #skill-recoverMP{
     position: absolute;
     top: 250px;
     left: 620px;
+}
+
+#skill-recoverMP .skill-img{
+    background-image: url(asset/img/skill-recoverMP.png);
+    background-size: auto;
 }
 
 .skill-container:hover .tip{
@@ -709,51 +747,59 @@ body {
 .skill-progressBar{
     height: 10px;
     background-color: greenyellow;
-    transition-property: width;
+    transition-property: width border-bottom-right-radius;
     transition-duration: 2s;
+    border-bottom-left-radius: inherit;
 }
 
-#progress-0{
+.progress-0{
     width: 0%;
-    border-bottom-left-radius: inherit;
 }
 
-#progress-1{
+.progress-1{
     width: 20%;
-    border-bottom-left-radius: inherit;
 }
 
-#progress-2{
+.progress-2{
     width: 40%;
-    border-bottom-left-radius: inherit;
 }
 
-#progress-3{
+.progress-3{
     width: 60%;
-    border-bottom-left-radius: inherit;
 }
 
-#progress-4{
+.progress-4{
     width: 80%;
-    border-bottom-left-radius: inherit;
 }
 
-#progress-5{
+.progress-5{
     width: 100%;
-    border-bottom-left-radius: inherit;
     border-bottom-right-radius: inherit;
 }
 
 .progressChange{
-    animation-name: progressBar-done;
-    animation-duration: 1s;
-    animation-timing-function: linear;
+    background-color: white;
 }
 
-@keyframes progressBar-done{
-    0%   {background-color: greenyellow;}
-    50%  {background-color: white;}
-    100% {background-color: greenyellow;}
+.skill-upgrade{
+    position: absolute;
+    width: 120px;
+    height: 30px;
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgb(250,250,250);
+    border: 1px solid gray;
+    border-radius: 10px;
+    box-shadow: inset -1px -2px 6px rgba(0, 0, 0, .4);
+}
+
+.skill-upgrade:hover:valid{
+    background-color: rgb(200,200,200);
+}
+
+.skill-upgrade:active:valid{
+    box-shadow: inset 1px 2px 6px rgba(0, 0, 0, .4);
 }
 
 /* ------------------ranking------------------ */
