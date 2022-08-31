@@ -362,11 +362,11 @@ body {
     box-shadow: inset -1px -2px 6px rgba(0, 0, 0, .4);
 }
 
-#upgradeButton:hover:valid{
+#upgradeButton:hover:enabled{
     background-color: rgb(200,200,200);
 }
 
-#upgradeButton:active:valid{
+#upgradeButton:active:enabled{
     box-shadow: inset 1px 2px 6px rgba(0, 0, 0, .4);
 }
 
@@ -593,24 +593,24 @@ body {
     border-radius: 5px;
 }
 
-.apply-yes:valid{
+.apply-yes:enabled{
     background-color: rgb(50, 150, 50);
 }
 
-.apply-no:valid{
+.apply-no:enabled{
     background-color: rgb(230, 70, 50);
 }
 
-.apply-yes:hover:valid{
+.apply-yes:hover:enabled{
     background-color: rgb(10, 110, 10);
 }
 
-.apply-no:hover:valid{
+.apply-no:hover:enabled{
     background-color: rgb(190, 50, 30);
 }
 
-.apply-yes:active:valid,
-.apply-no:active:valid{
+.apply-yes:active:enabled,
+.apply-no:active:enabled{
     box-shadow: inset 2px 2px 5px 0 rgba(0, 0, 0, .4);
 }
 
@@ -794,11 +794,11 @@ body {
     box-shadow: inset -1px -2px 6px rgba(0, 0, 0, .4);
 }
 
-.skill-upgrade:hover:valid{
+.skill-upgrade:hover:enabled{
     background-color: rgb(200,200,200);
 }
 
-.skill-upgrade:active:valid{
+.skill-upgrade:active:enabled{
     box-shadow: inset 1px 2px 6px rgba(0, 0, 0, .4);
 }
 
@@ -953,6 +953,13 @@ body {
 .search-information:active:enabled,
 #search-button:active{
     box-shadow: inset 2px 2px 5px 0 rgba(0, 0, 0, .4);
+}
+
+.applying:enabled{
+    background-color: rgb(10, 200, 10);
+}
+.applying:hover:enabled{
+    background-color: rgb(0, 150, 0);
 }
 
 /* ------------------confirmBox------------------ */

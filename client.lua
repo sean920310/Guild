@@ -59,7 +59,7 @@ function Guild:join(name)
             end
         else
             self:load()
-            chat("你加入了"..name,{0,255,0})
+            chat("你申請加入了"..name,{0,255,0})
 
             TriggerServerEvent("Guild:server:onChange")
             TriggerEvent("Guild:client:onChange")

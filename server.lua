@@ -174,6 +174,12 @@ function Guild:load(source)
 end
 
 function Guild:new(source, name, comment)
+    local xPlayer = ESX.GetPlayerFromId(source)
+
+    if xPlayer.get("guild") then
+       return "Already in guild" 
+    end
+
     if name == nil then
         return "Guild name is nil"
     end
@@ -190,16 +196,27 @@ function Guild:new(source, name, comment)
 
     table.insert(self.list, #self.list+1,{
         name = name,
+        chairman = xPlayer.getName(),
         level = 1,
-        players = 0,
+        players = 1,
         comment = comment,
-        member = {},
+        member = {
+            {
+                identifier = xPlayer.getIdentifier(),
+                name = xPlayer.getName(),
+                guild = name,
+                apply = nil,
+                point = 0,
+                grade = 4
+            }
+        },
         apply = {}
     })
+
     match[name] = #self.list
 
-
-    MySQL.Async.execute('INSERT INTO `guild_list` (`name`,`level`,`point`,`players`, `comment`) VALUES (@name,1,0,0,@comment)', {['name'] = name,['comment'] = comment}, nil)
+    MySQL.Async.execute('INSERT INTO `guild_list` (`name`,`chairman`,`level`,`point`,`players`, `comment`) VALUES (@name,@chairman,1,0,1,@comment)', {['name'] = name,['chairman'] = xPlayer.getName(),['comment'] = comment}, nil)
+    MySQL.Async.execute('UPDATE `guild_player` SET `guild` = @guild, `grade` = 4 WHERE identifier = @identifier', {["@identifier"] = xPlayer.getIdentifier(),["@guild"] = name}, nil)
 
     if Config.debug then
         print("New guild: "..self.list[#self.list].name)
