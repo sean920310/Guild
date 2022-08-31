@@ -173,7 +173,7 @@ function Guild:load(source)
     return data
 end
 
-function Guild:new(name, comment)
+function Guild:new(source, name, comment)
     if name == nil then
         return "Guild name is nil"
     end
@@ -216,26 +216,29 @@ function Guild:join(source, name)
         return "You already has a guild"
     end
 
-    for i=1, #self.list do
-        if self.list[i].name == name then
-            table.insert(self.list[i].apply,#self.list[i].apply+1,{
-                identifier = xPlayer.getIdentifier(),
-                name = xPlayer.getName(),
-                guild = nil,
-                apply = name,
-                point = 0,
-                grade = 0
-            })
-
-            xPlayer.set('guild',nil)
-            MySQL.Async.execute('UPDATE `guild_player` SET `guild` = @guild, `grade` = 0 WHERE identifier = @identifier', {["@identifier"] = xPlayer.getIdentifier(),["@guild"] = name}, nil)
-            
-            if Config.debug then
-                print(xPlayer.getName().." wants to join "..name)
-            end
-
-            return false
+    local guild = self.list[match[name]]
+    if guild then
+        if guild.players>=(math.floor((guild.level-1)/3)*5 + 20) then
+            return "Guild is already full"
         end
+
+        table.insert(guild.apply,#guild.apply+1,{
+            identifier = xPlayer.getIdentifier(),
+            name = xPlayer.getName(),
+            guild = nil,
+            apply = name,
+            point = 0,
+            grade = 0
+        })
+
+        xPlayer.set('guild',nil)
+        MySQL.Async.execute('UPDATE `guild_player` SET `guild` = @guild, `grade` = 0 WHERE identifier = @identifier', {["@identifier"] = xPlayer.getIdentifier(),["@guild"] = name}, nil)
+        
+        if Config.debug then
+            print(xPlayer.getName().." wants to join "..name)
+        end
+
+        return false
     end
 
     return "Couldn't find the guild "..name
@@ -249,26 +252,25 @@ function Guild:leave(source)
        return "Is not in any guild" 
     end
 
-    for i=1, #self.list do
-        if self.list[i].name == name then
-            self.list[i].players = self.list[i].players - 1
-            for j=1, #self.list[i].member do
-                if self.list[i].member[j].identifier == xPlayer.getIdentifier() then
-                    table.remove(self.list[i].member,j)
-                    break
-                end
+    local guild = self.list[match[name]]
+    if guild then
+        guild.players = guild.players - 1
+        for j=1, #guild.member do
+            if guild.member[j].identifier == xPlayer.getIdentifier() then
+                table.remove(guild.member,j)
+                break
             end
-            
-            xPlayer.set('guild', nil)
-            MySQL.Async.execute('UPDATE `guild_list` SET `players`= @players WHERE `name` = @name', {["@name"] = name, ["@players"] = self.list[i].players}, nil)
-            MySQL.Async.execute('UPDATE `guild_player` SET `guild` = NULL, `grade` = 0, `point` = 0 WHERE identifier = @identifier', {["@identifier"] = xPlayer.getIdentifier()}, nil)
-            
-            if Config.debug then
-                print(xPlayer.getName().." leave "..self.list[i].name)
-            end
-
-            return false
         end
+        
+        xPlayer.set('guild', nil)
+        MySQL.Async.execute('UPDATE `guild_list` SET `players`= @players WHERE `name` = @name', {["@name"] = name, ["@players"] = guild.players}, nil)
+        MySQL.Async.execute('UPDATE `guild_player` SET `guild` = NULL, `grade` = 0, `point` = 0 WHERE identifier = @identifier', {["@identifier"] = xPlayer.getIdentifier()}, nil)
+        
+        if Config.debug then
+            print(xPlayer.getName().." leave "..guild.name)
+        end
+
+        return false
     end
 
     return "Couldn't find the guild "..name
@@ -288,6 +290,10 @@ function Guild:apply(source, identifier, accept)
             if guild.apply[i].identifier == identifier then
                 local tempName = guild.apply[i].name
                 if accept then
+                    if guild.players>=(math.floor((guild.level-1)/3)*5 + 20) then
+                        return "Guild is already full"
+                    end
+
                     local targetPlayer = guild.apply[i]
                     targetPlayer.grade = 1
                     targetPlayer.point = 0
@@ -443,11 +449,16 @@ function Guild:upgrade(source)
         if guild.point < pointCost then
             return "Not enough point"
         end
+        if guild.level >= 10 then
+            return "Guild level is already the highest level"
+        end
+
         guild.money = guild.money - moneyCost
         guild.point = guild.point - pointCost
         guild.level = guild.level + 1
+        guild.skillPoint = guild.skillPoint + 2
 
-        MySQL.Async.execute('UPDATE `guild_list` SET `level`= @level,`point`= @point,`money`= @money WHERE `name` = @name', {["@name"] = name, ["@level"] = guild.level, ["@point"] = guild.point, ["@money"] = guild.money}, nil)
+        MySQL.Async.execute('UPDATE `guild_list` SET `level`= @level,`point`= @point,`money`= @money,`skillPoint`= @skillPoint WHERE `name` = @name', {["@name"] = name, ["@level"] = guild.level, ["@point"] = guild.point, ["@money"] = guild.money, ["@skillPoint"] = guild.skillPoint}, nil)
     
         if Config.debug then
             print(name.." upgrade to "..guild.level)
@@ -495,7 +506,7 @@ end
 --------------------------------------------------------------------------------------
 
 ESX.RegisterServerCallback("Guild:new",function(source,cb,name,comment)
-    cb(Guild:new(name,comment))
+    cb(Guild:new(source,name,comment))
 end)
 
 ESX.RegisterServerCallback("Guild:join",function(source,cb,name)

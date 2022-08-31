@@ -593,24 +593,24 @@ body {
     border-radius: 5px;
 }
 
-.apply-yes{
+.apply-yes:valid{
     background-color: rgb(50, 150, 50);
 }
 
-.apply-no{
+.apply-no:valid{
     background-color: rgb(230, 70, 50);
 }
 
-.apply-yes:hover{
+.apply-yes:hover:valid{
     background-color: rgb(10, 110, 10);
 }
 
-.apply-no:hover{
+.apply-no:hover:valid{
     background-color: rgb(190, 50, 30);
 }
 
-.apply-yes:active,
-.apply-no:active{
+.apply-yes:active:valid,
+.apply-no:active:valid{
     box-shadow: inset 2px 2px 5px 0 rgba(0, 0, 0, .4);
 }
 

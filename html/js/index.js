@@ -1,5 +1,5 @@
 //===========================config===========================
-let htmlDebug = true;
+let htmlDebug = false;
 let keyCode = 'KeyK';
 let gradePermission = [
     {
@@ -113,15 +113,13 @@ $(function(){
             for(let i=0; i<data.list.length; i++)
             {
                 if(data.list[i]){
-                    buf = buf + '<tr><td>'+(i+1)+'</td> <td>'+ data.list[i].name+'</td> <td>'+ data.list[i].players+'</td> <td>'+ data.list[i].point+'</td><td><button class="search-join" id="join-'+data.list[i].name+'">申請加入</button><button class="search-information" id="information-'+data.list[i].name+'">公會資訊</button></td> </tr>';
-                }
-                else
-                {
-                    buf = buf + '<tr><td>'+(i+1)+'</td> <td></td> <td></td> <td></td> <td></td> </tr>';
+                    let isFull = (data.list[i].players >= (Math.floor((data.list[i].level-1)/3)*5 + 20));
+                    let disabled = "enabled";
+                    if(isFull||hasGuild){disabled="disabled"}
+                    buf = buf + '<tr><td>'+(i+1)+'</td> <td>'+ data.list[i].name+'</td> <td>'+ data.list[i].players+'</td> <td>'+ 'Lv.'+data.list[i].level+'</td> <td>'+ data.list[i].point+'</td><td><button class="search-join" id="join-'+data.list[i].name+'" '+disabled+'>申請加入</button><button class="search-information" id="information-'+data.list[i].name+'">公會資訊</button></td> </tr>';
                 }
             }
             $("#search table tbody").html(buf);
-            $(".search-join").attr("disabled",hasGuild);
         }
     });
     
@@ -382,13 +380,15 @@ $(function(){
         {
             if(data.list[i]){
                 if(data.list[i].name.includes(input)){
-                    buf = buf + '<tr><td>'+(count)+'</td> <td>'+ data.list[i].name+'</td> <td>'+ data.list[i].players+'</td> <td>'+ 'Lv.'+data.list[i].level+'</td> <td>'+ data.list[i].point+'</td><td><button class="search-join" id="join-'+data.list[i].name+'">申請加入</button><button class="search-information" id="information-'+data.list[i].name+'">公會資訊</button></td> </tr>';
+                    let isFull = (data.list[i].players >= (Math.floor((data.list[i].level-1)/3)*5 + 20));
+                    let disabled = "enabled";
+                    if(isFull||hasGuild){disabled="disabled"}
+                    buf = buf + '<tr><td>'+(count)+'</td> <td>'+ data.list[i].name+'</td> <td>'+ data.list[i].players+'</td> <td>'+ 'Lv.'+data.list[i].level+'</td> <td>'+ data.list[i].point+'</td><td><button class="search-join" id="join-'+data.list[i].name+'" '+disabled+'>申請加入</button><button class="search-information" id="information-'+data.list[i].name+'">公會資訊</button></td> </tr>';
                     count++;
                 }
             }
         }
         $("#search table tbody").html(buf);
-        $(".search-join").attr("disabled",hasGuild);
     });
 
     //search join click
@@ -485,7 +485,7 @@ function setupInformation(guild,selfGuild){
             $('#need-money').text(moneyCost.toLocaleString('en'));
             $('#need-point').text(pointCost.toLocaleString('en'));
 
-            if(guild.point<pointCost || guild.money<moneyCost){
+            if(guild.point<pointCost || guild.money<moneyCost || guild.level>=10){
                 $('#upgradeButton').attr("disabled",true);
             }else{
                 $('#upgradeButton').attr("disabled",false);
@@ -498,6 +498,7 @@ function setupInformation(guild,selfGuild){
     else{
         $("#editGuild").hide();
         $("#leaveGuild").hide();
+        $("#upgradeGuild").hide();
     }
 }
 
@@ -548,6 +549,9 @@ function setupMember(guild,selfGuild){
             }
         }
         $("#member-apply table tbody").html(buf);
+
+        let isFull = (guild.players >= (Math.floor((guild.level-1)/3)*5 + 20));
+        $(".apply-yes").attr("disabled", isFull);
 
         if(gradePermission[data.player.grade].joinApply){
             $("#join-apply").show();
