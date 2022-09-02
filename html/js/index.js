@@ -490,6 +490,15 @@ function setupInformation(guild,selfGuild){
             let pointCost = upgradeCost.point * guild.level;
             $('#need-money').text(moneyCost.toLocaleString('en'));
             $('#need-point').text(pointCost.toLocaleString('en'));
+
+            if(guild.level>=10){
+                $('#need-money').hide();
+                $('#need-point').hide();
+            }
+            else{
+                $('#need-money').show();
+                $('#need-point').show();
+            }
             
             $('#upgrade-information').css("background-image", "url(asset/img/upgrade-"+guild.level+".png)")
 
