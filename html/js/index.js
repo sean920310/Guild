@@ -8,7 +8,8 @@ let gradePermission = [
         joinApply: false,
         kickMember: false,
         changeGrade: false,
-        upgradeGuild: false
+        upgradeGuild: false,
+        upgradeSkill: false
     },
     {
         name: "成員",
@@ -16,7 +17,8 @@ let gradePermission = [
         joinApply: false,
         kickMember: false,
         changeGrade: false,
-        upgradeGuild: false
+        upgradeGuild: false,
+        upgradeSkill: false
     },
     {
         name: "秘書",
@@ -24,7 +26,8 @@ let gradePermission = [
         joinApply: true,
         kickMember: true,
         changeGrade: false,
-        upgradeGuild: false
+        upgradeGuild: false,
+        upgradeSkill: false
     },
     {
         name: "副會長",
@@ -32,7 +35,8 @@ let gradePermission = [
         joinApply: true,
         kickMember: true,
         changeGrade: false,
-        upgradeGuild: true
+        upgradeGuild: true,
+        upgradeSkill: false
     },
     {
         name: "會長",
@@ -40,7 +44,8 @@ let gradePermission = [
         joinApply: true,
         kickMember: true,
         changeGrade: true,
-        upgradeGuild: true
+        upgradeGuild: true,
+        upgradeSkill: true
     }
 ]
 let upgradeCost = {
@@ -581,9 +586,7 @@ function setupSkill(){
     
     $(".skill-upgrade").attr("disabled", false);
     if(data.guild.skillPoint<=0){
-        for (let i = 0; i <= 5; i++) {
-            $(".skill-upgrade").attr("disabled", true);
-        }
+        $(".skill-upgrade").attr("disabled", true);
     }
     if(skill.XP>=5){
         $("#upgrade-XP").attr("disabled", true);
@@ -602,5 +605,9 @@ function setupSkill(){
     }
     if(skill.recoverMP>=5){
         $("#upgrade-recoverMP").attr("disabled", true);
+    }
+
+    if(!gradePermission[data.player.grade].upgradeSkill){
+        $(".skill-upgrade").attr("disabled",true);
     }
 }

@@ -520,6 +520,32 @@ function Guild:skillUpgrade(source,skill)
     return "Couldn't find the guild "..name
 end
 
+function Guild:shop(source,item)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local name = xPlayer.get("guild")
+
+    if not name then
+        return "Is not in any guild" 
+    end
+
+    local guild = self.list[match[name]]
+    if guild then
+        local playerMoney = xPlayer.getMoney()
+        local cost = Config.shopItem[item].money
+
+        if playerMoney >= cost then
+            xPlayer.removeMoney(cost)
+            xPlayer.addInventoryItem(item,1)
+        else
+            return "You don't have enough money"
+        end
+
+        return false
+    end
+
+    return "Couldn't find the guild "..name
+end
+
 --------------------------------------------------------------------------------------
 
 ESX.RegisterServerCallback("Guild:new",function(source,cb,name,comment)
@@ -556,6 +582,10 @@ end)
 
 ESX.RegisterServerCallback("Guild:skillUpgrade",function(source,cb,skill)
     cb(Guild:skillUpgrade(source,skill))
+end)
+
+ESX.RegisterServerCallback("Guild:shop",function(source,cb,item)
+    cb(Guild:shop(source,item))
 end)
 
 ESX.RegisterServerCallback("Guild:load",function(source,cb)

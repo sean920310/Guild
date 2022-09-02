@@ -856,6 +856,100 @@ body {
     border-bottom: 1px solid rgb(100,100,100);
 }
 
+/* ------------------shop------------------ */
+
+#shop{
+    position: relative;
+    height: 500px;
+    margin: 10px;
+    padding: 0 20px;
+    font-size: 15px;
+    text-align: center;
+    border: 1px solid white;
+    background-color: rgb(55,55,55);
+    border-radius: 10px;
+    box-shadow: inset 0px 10px 15px -5px rgba(255, 255, 255, .4);
+}
+
+.shop-item{
+    position: absolute;
+    height: 220px;
+    width: 180px;
+    padding: 0px 5px;
+    border: 1px solid white;
+    border-radius: 5px;
+}
+
+#green{
+    top: 20px;
+    left: 50px;
+}
+
+#blue{
+    top: 20px;
+    left: 250px;
+}
+
+#purple{
+    top: 20px;
+    left: 450px;
+}
+
+#gold{
+    top: 260px;
+    left: 50px;
+}
+
+#red{
+    top: 260px;
+    left: 250px;
+}
+
+.item-name{
+    width: 100%;
+    padding: 15px 0px;
+    text-align: center;
+    border-bottom: 0.5px dashed white;
+}
+
+.item-limit{
+    width: 100%;
+    padding: 5px 0px;
+    text-align: right;
+    font-size: 12px;
+    color: darkgoldenrod;
+}
+
+.item-img{
+    height: 100px;
+    width: 100%;
+}
+
+.shop-buy{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 5px;
+    width: calc(100% - 5px);
+    height: 30px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    box-shadow: inset -1px -2px 6px rgba(0, 0, 0, .4);
+}
+
+.shop-buy:hover:enabled{
+    background-color: rgb(200,200,200);
+}
+
+.shop-buy:active:enabled{
+    box-shadow: inset 1px 2px 6px rgba(0, 0, 0, .4);
+}
+
+.shop-buy>span:first-child{
+    position: absolute;
+    left: 20px;
+}
+
 /* ------------------search------------------ */
 
 #content-search div:first-child{
