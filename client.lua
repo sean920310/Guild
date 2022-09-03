@@ -198,6 +198,13 @@ function Guild:shop(item)
     end,item)
 end
 
+function Guild:initNUI()
+    SendNUIMessage({
+        type = 'init',
+        config = Config
+    })
+end
+
 function Guild:setupNUI()
     if not self.data then
         self:load()
@@ -333,7 +340,9 @@ end)
 
 --------------------------------------------------------------------------------------
 
-Citizen.CreateThread(function()    
+Citizen.CreateThread(function()
+    Citizen.Wait(500)
+    Guild:initNUI()    
     while true do
         Citizen.Wait(0)
         

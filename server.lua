@@ -55,6 +55,7 @@ function Guild:init(debug)
     MySQL.Async.fetchAll('SELECT * FROM `guild_player`',{}, function(collect)
         if collect[1] then
             for i=1, #collect do
+                collect[i].shop = json.decode(collect[i].shop)
                 local sync = false
                 MySQL.Async.fetchAll('SELECT `job`,`rank` FROM `users` WHERE `identifier`=@identifier;', {['@identifier'] = collect[i].identifier}, function(user)
                     if user[1] then
@@ -136,6 +137,7 @@ function Guild:load(source)
                 name = nil
                 xPlayer.set("guild",nil)
             end
+            data.player.shop = json.decode(data.player.shop)
 
             data.list = self.list
 
@@ -157,6 +159,13 @@ function Guild:load(source)
                 apply= nil,
                 point = 0,
                 grade = 0,
+                shop = {
+                    green_material = 0,
+                    blue_material = 0,
+                    purple_material = 0,
+                    gold_material = 0,
+                    red_material = 0
+                },
                 job = xPlayer.get("job"),
                 rank = xPlayer.get("rank")
             }
@@ -207,7 +216,16 @@ function Guild:new(source, name, comment)
                 guild = name,
                 apply = nil,
                 point = 0,
-                grade = 4
+                grade = 4,
+                shop = {
+                    green_material = 0,
+                    blue_material = 0,
+                    purple_material = 0,
+                    gold_material = 0,
+                    red_material = 0
+                },
+                job = xPlayer.get("job"),
+                rank = xPlayer.get("rank")
             }
         },
         apply = {}
@@ -245,11 +263,20 @@ function Guild:join(source, name)
             guild = nil,
             apply = name,
             point = 0,
-            grade = 0
+            grade = 0,
+            shop = {
+                green_material = 0,
+                blue_material = 0,
+                purple_material = 0,
+                gold_material = 0,
+                red_material = 0
+            },
+            job = xPlayer.get("job"),
+            rank = xPlayer.get("rank")
         })
 
         xPlayer.set('guild',nil)
-        MySQL.Async.execute('UPDATE `guild_player` SET `guild` = @guild, `grade` = 0 WHERE identifier = @identifier', {["@identifier"] = xPlayer.getIdentifier(),["@guild"] = name}, nil)
+        MySQL.Async.execute('UPDATE `guild_player` SET `guild` = @guild, `grade` = 0, `shop`= DEFAULT WHERE identifier = @identifier', {["@identifier"] = xPlayer.getIdentifier(),["@guild"] = name}, nil)
         
         if Config.debug then
             print(xPlayer.getName().." wants to join "..name)
@@ -281,7 +308,7 @@ function Guild:leave(source)
         
         xPlayer.set('guild', nil)
         MySQL.Async.execute('UPDATE `guild_list` SET `players`= @players WHERE `name` = @name', {["@name"] = name, ["@players"] = guild.players}, nil)
-        MySQL.Async.execute('UPDATE `guild_player` SET `guild` = NULL, `grade` = 0, `point` = 0 WHERE identifier = @identifier', {["@identifier"] = xPlayer.getIdentifier()}, nil)
+        MySQL.Async.execute('UPDATE `guild_player` SET `guild` = NULL, `grade` = 0, `point` = 0, `shop`= DEFAULT WHERE identifier = @identifier', {["@identifier"] = xPlayer.getIdentifier()}, nil)
         
         if Config.debug then
             print(xPlayer.getName().." leave "..guild.name)
@@ -390,13 +417,13 @@ function Guild:kick(source,identifier)
 
     local guild = self.list[match[name]]
     if guild then
-       for i = 1, #guild.member do
+        for i = 1, #guild.member do
             if guild.member[i].identifier == identifier then
                 local tempName = guild.member[i].name
                 table.remove(guild.member,i)
                 guild.players = guild.players-1
 
-                MySQL.Async.execute('UPDATE `guild_player` SET `guild` = NULL, `grade` = 0, `point` = 0 WHERE identifier = @identifier', {["@identifier"] = identifier}, nil)
+                MySQL.Async.execute('UPDATE `guild_player` SET `guild` = NULL, `grade` = 0, `point` = 0, `shop`= DEFAULT WHERE identifier = @identifier', {["@identifier"] = identifier}, nil)
                 MySQL.Async.execute('UPDATE `guild_list` SET `players`= @players WHERE `name` = @name', {["@name"] = name, ["@players"] = guild.players}, nil)
                 
                 if Config.debug then
@@ -523,6 +550,7 @@ end
 function Guild:shop(source,item)
     local xPlayer = ESX.GetPlayerFromId(source)
     local name = xPlayer.get("guild")
+    local identifier = xPlayer.getIdentifier()
 
     if not name then
         return "Is not in any guild" 
@@ -534,8 +562,17 @@ function Guild:shop(source,item)
         local cost = Config.shopItem[item].money
 
         if playerMoney >= cost then
+            for i = 1, #guild.member do
+                if guild.member[i].identifier == identifier then
+                    if guild.member[i].shop[item] >= Config.shopItem[item].limit then
+                        return "You already buy to the limited amount"
+                    end
+                    guild.member[i].shop[item] = guild.member[i].shop[item] + 1
+                    MySQL.Async.execute('UPDATE `guild_player` SET `shop`= @shop WHERE identifier = @identifier', {["@identifier"] = identifier, ["@shop"] = json.encode(guild.member[i].shop)}, nil)
+                end
+            end
             xPlayer.removeMoney(cost)
-            xPlayer.addInventoryItem(item,1)
+            --xPlayer.addInventoryItem(item,1)
         else
             return "You don't have enough money"
         end

@@ -12,22 +12,27 @@ Config.upgradeCost = {
 Config.shopItem = {
     green_material = {
         name = "green_material",
-        money = 1000
+        money = 100,
+        limit = 5
     },
     blue_material = {
         name = "blue_material",
-        money = 5000
+        money = 500,
+        limit = 5
     },
     purple_material = {
         name = "purple_material",
-        money = 10000
+        money = 1000,
+        limit = 5
     },
     gold_material = {
         name = "gold_material",
-        money = 20000
+        money = 2000,
+        limit = 5
     },
     red_material = {
         name = "red_material",
-        money = 50000
+        money = 5000,
+        limit = 5
     }
 }

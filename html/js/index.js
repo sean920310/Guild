@@ -48,10 +48,8 @@ let gradePermission = [
         upgradeSkill: true
     }
 ]
-let upgradeCost = {
-    money: 15000,
-    point: 5000
-}
+let upgradeCost = {}
+let shopItem = {}
 
 //============================================================
 
@@ -80,7 +78,11 @@ $(function(){
     //event
     window.addEventListener("message",function(event){
         let item = event.data
-        if (item.type === "open") {
+        if(item.type === "init"){
+            upgradeCost = item.config.upgradeCost;
+            shopItem = item.config.shopItem;
+        }
+        else if (item.type === "open") {
             display(true);
 
             $(".content").removeClass('selected');
@@ -100,6 +102,9 @@ $(function(){
 
                 //skill
                 setupSkill();
+
+                //shop
+                setupShop();
 
                 hasGuild = true;
             }
@@ -376,6 +381,15 @@ $(function(){
         }));
     });
 
+    $(".shop-buy").click(function(){
+        let item = $(this).attr("id");
+        item = item.substring(4) + "_material";
+
+        $.post('https://Guild/shop', JSON.stringify({
+            item : item
+        }));
+    });
+
     //search
     $("#search-button").click(function(){
         let input = $("#search-input").val();
@@ -492,12 +506,12 @@ function setupInformation(guild,selfGuild){
             $('#need-point').text(pointCost.toLocaleString('en'));
 
             if(guild.level>=10){
-                $('#need-money').hide();
-                $('#need-point').hide();
+                $('#upgrade-information>div:nth-child(1)').hide();
+                $('#upgrade-information>div:nth-child(2)').hide();
             }
             else{
-                $('#need-money').show();
-                $('#need-point').show();
+                $('#upgrade-information>div:nth-child(1)').show();
+                $('#upgrade-information>div:nth-child(2)').show();
             }
             
             $('#upgrade-information').css("background-image", "url(asset/img/upgrade-"+guild.level+".png)")
@@ -618,5 +632,36 @@ function setupSkill(){
 
     if(!gradePermission[data.player.grade].upgradeSkill){
         $(".skill-upgrade").attr("disabled",true);
+    }
+}
+
+function setupShop(){
+    $("#buy-green>span:nth-child(2)").text(shopItem.green_material.money.toLocaleString('en'));
+    $("#buy-blue>span:nth-child(2)").text(shopItem.blue_material.money.toLocaleString('en'));
+    $("#buy-purple>span:nth-child(2)").text(shopItem.purple_material.money.toLocaleString('en'));
+    $("#buy-gold>span:nth-child(2)").text(shopItem.gold_material.money.toLocaleString('en'));
+    $("#buy-red>span:nth-child(2)").text(shopItem.red_material.money.toLocaleString('en'));
+
+    $("#green>.item-limit").text("可購買次數 "+(shopItem.green_material.limit - data.player.shop.green_material)+"/"+(shopItem.green_material.limit));
+    $("#blue>.item-limit").text("可購買次數 "+(shopItem.blue_material.limit - data.player.shop.blue_material)+"/"+(shopItem.blue_material.limit));
+    $("#purple>.item-limit").text("可購買次數 "+(shopItem.purple_material.limit - data.player.shop.purple_material)+"/"+(shopItem.purple_material.limit));
+    $("#gold>.item-limit").text("可購買次數 "+(shopItem.gold_material.limit - data.player.shop.gold_material)+"/"+(shopItem.gold_material.limit));
+    $("#red>.item-limit").text("可購買次數 "+(shopItem.red_material.limit - data.player.shop.red_material)+"/"+(shopItem.red_material.limit));
+
+    $(".shop-buy").attr("disabled",false);
+    if(data.player.shop.green_material>=shopItem.green_material.limit){
+        $("#buy-green").attr("disabled",true);
+    }
+    if(data.player.shop.blue_material>=shopItem.blue_material.limit){
+        $("#buy-blue").attr("disabled",true);
+    }
+    if(data.player.shop.purple_material>=shopItem.purple_material.limit){
+        $("#buy-purple").attr("disabled",true);
+    }
+    if(data.player.shop.gold_material>=shopItem.gold_material.limit){
+        $("#buy-gold").attr("disabled",true);
+    }
+    if(data.player.shop.red_material>=shopItem.red_material.limit){
+        $("#buy-red").attr("disabled",true);
     }
 }
