@@ -648,3 +648,12 @@ CreateThread(function()
     Guild:init(true)
 end)
 
+CreateThread(function()
+    while true do
+        Wait(500)
+        if tonumber(os.date("%H",os.time())) == 0 and tonumber(os.date("%M",os.time())) == 0 and tonumber(os.date("%S",os.time())) == 0 then
+            MySQL.Async.execute('UPDATE `guild_player` SET `shop`= DEFAULT', {}, nil)
+            TriggerEvent("Guild:server:onChange")
+        end
+    end
+end)

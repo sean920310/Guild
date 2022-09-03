@@ -950,6 +950,63 @@ body {
     left: 20px;
 }
 
+/* ------------------misson------------------ */
+
+#misson{
+    position: relative;
+    height: 500px;
+    margin: 10px;
+    padding: 0px 20px;
+    font-size: 15px;
+    border: 1px solid white;
+    background-color: rgb(55,55,55);
+    border-radius: 10px;
+    box-shadow: inset 0px 10px 15px -5px rgba(255, 255, 255, .4);
+}
+
+#misson-day,
+#misson-week{
+    height: 210px;
+    padding: 0px 20px;
+    background-color: inherit;
+    border: 1px solid white;
+}
+
+#misson-day{
+    margin-top: 40px;
+}
+
+#misson-week{
+    margin-top: 20px;
+}
+
+#misson-day>div:first-child,
+#misson-week>div:first-child{
+    position: relative;
+    top: -10px;
+    left: 20px;
+    width: 100px;
+    text-align: center;
+    background-color: inherit;
+}
+
+#misson-day>div:nth-child(2),
+#misson-week>div:nth-child(2){
+    display: flex;
+    height: 177px;
+    width: 704px;
+    overflow: auto;
+}
+
+.misson-container{
+    flex-shrink: 0;
+    margin-right: 20px;
+    width: 150px;
+    height: 160px;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
 /* ------------------search------------------ */
 
 #content-search div:first-child{
@@ -1115,6 +1172,7 @@ body {
 
 ::-webkit-scrollbar {
 	width: 5px;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
