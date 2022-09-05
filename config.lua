@@ -13,27 +13,32 @@ Config.shopItem = {
     green_material = {
         name = "green_material",
         money = 100,
-        limit = 5
+        limit = 5,
+        level = 2
     },
     blue_material = {
         name = "blue_material",
         money = 500,
-        limit = 5
+        limit = 5,
+        level = 4
     },
     purple_material = {
         name = "purple_material",
         money = 1000,
-        limit = 5
+        limit = 5,
+        level = 6
     },
     gold_material = {
         name = "gold_material",
         money = 2000,
-        limit = 5
+        limit = 5,
+        level = 8
     },
     red_material = {
         name = "red_material",
         money = 5000,
-        limit = 5
+        limit = 5,
+        level = 10
     }
 }
 

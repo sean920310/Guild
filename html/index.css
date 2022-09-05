@@ -733,7 +733,7 @@ body {
     top: -40px;
     left: 120px;
     border: 1px solid white;
-    background-color: rgba(0, 0, 0, .6);
+    background-color: rgb(0, 0, 0);
 }
 
 .tip>div:first-child{
@@ -948,6 +948,12 @@ body {
 .shop-buy>span:first-child{
     position: absolute;
     left: 20px;
+}
+
+.shop-buy:hover+.tip{
+    display: block;
+    top: -10px;
+    left: 0px;
 }
 
 /* ------------------misson------------------ */

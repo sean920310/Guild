@@ -664,4 +664,26 @@ function setupShop(){
     if(data.player.shop.red_material>=shopItem.red_material.limit){
         $("#buy-red").attr("disabled",true);
     }
+
+    $(".shop-item>.tip").remove();
+    if(data.guild.level < shopItem.green_material.level){
+        $("#buy-green").attr("disabled",true);
+        $("#buy-green").after('<div class="tip" id="tip-buy">將在公會等級'+shopItem.green_material.level+'等時解鎖</div>');
+    }
+    if(data.guild.level < shopItem.blue_material.level){
+        $("#buy-blue").attr("disabled",true);
+        $("#buy-blue").after('<div class="tip" id="tip-buy">將在公會等級'+shopItem.blue_material.level+'等時解鎖</div>');
+    }
+    if(data.guild.level < shopItem.purple_material.level){
+        $("#buy-purple").attr("disabled",true);
+        $("#buy-purple").after('<div class="tip" id="tip-buy">將在公會等級'+shopItem.purple_material.level+'等時解鎖</div>');
+    }
+    if(data.guild.level < shopItem.gold_material.level){
+        $("#buy-gold").attr("disabled",true);
+        $("#buy-gold").after('<div class="tip" id="tip-buy">將在公會等級'+shopItem.gold_material.level+'等時解鎖</div>');
+    }
+    if(data.guild.level < shopItem.red_material.level){
+        $("#buy-red").attr("disabled",true);
+        $("#buy-red").after('<div class="tip" id="tip-buy">將在公會等級'+shopItem.red_material.level+'等時解鎖</div>');
+    }
 }
