@@ -48,27 +48,67 @@ Config.misson = {
             type = "hand_in",
             item = "money",
             amount = 10000,
-            describe = "繳交10000金幣"
+            describe = "繳交10000金幣",
+            rewards = {
+                {
+                    name = "money",
+                    amount = 1000
+                },
+                {
+                    name = "xp",
+                    amount = 500
+                }
+            }
         },
         {
             type = "hand_in",
             item = "water",
             amount = 10,
-            describe = "繳交10瓶水"
+            describe = "繳交10瓶水",
+            rewards = {
+                {
+                    name = "money",
+                    amount = 1000
+                },
+                {
+                    name = "xp",
+                    amount = 500
+                }
+            }
         }
     },
     medium = {
         {
             type = "kill",
             name = "player",
-            amount = 10,
-            describe = "擊殺10名玩家"
+            amount = 15,
+            describe = "擊殺15名玩家",
+            rewards = {
+                {
+                    name = "money",
+                    amount = 1500
+                },
+                {
+                    name = "xp",
+                    amount = 1000
+                }
+            }
         },
         {
             type = "attend",
             name = "pvp",
             amount = 5,
-            describe = "參加5次PVP模式"
+            describe = "參加5次PVP模式",
+            rewards = {
+                {
+                    name = "money",
+                    amount = 1500
+                },
+                {
+                    name = "xp",
+                    amount = 1000
+                }
+            }
         }
     },
     hard = {
@@ -76,13 +116,33 @@ Config.misson = {
             type = "harm",
             name = "boss",
             amount = 15000,
-            describe = "對boss造成15000傷害"
+            describe = "對boss造成15000傷害",
+            rewards = {
+                {
+                    name = "money",
+                    amount = 2000
+                },
+                {
+                    name = "xp",
+                    amount = 1500
+                }
+            }
         },
         {
             type = "win",
             name = "pvp",
             amount = 5,
-            describe = "贏得5次PVP模式勝利"
+            describe = "贏得5次PVP模式勝利",
+            rewards = {
+                {
+                    name = "money",
+                    amount = 2000
+                },
+                {
+                    name = "xp",
+                    amount = 1500
+                }
+            }
         }
     }
 }

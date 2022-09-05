@@ -1,5 +1,5 @@
 //===========================config===========================
-let htmlDebug = true;
+let htmlDebug = false;
 let keyCode = 'KeyK';
 let gradePermission = [
     {
@@ -48,8 +48,9 @@ let gradePermission = [
         upgradeSkill: true
     }
 ]
-let upgradeCost = {}
-let shopItem = {}
+let upgradeCost = {};
+let shopItem = {};
+let misson = {};
 
 //============================================================
 
@@ -81,6 +82,7 @@ $(function(){
         if(item.type === "init"){
             upgradeCost = item.config.upgradeCost;
             shopItem = item.config.shopItem;
+            misson = item.config.misson
         }
         else if (item.type === "open") {
             display(true);
@@ -105,6 +107,9 @@ $(function(){
 
                 //shop
                 setupShop();
+
+                //misson
+                setupMisson();
 
                 hasGuild = true;
             }
@@ -686,4 +691,49 @@ function setupShop(){
         $("#buy-red").attr("disabled",true);
         $("#buy-red").after('<div class="tip" id="tip-buy">將在公會等級'+shopItem.red_material.level+'等時解鎖</div>');
     }
+}
+
+function setupMisson(){
+    $(".misson-container").remove();
+    let buf = '';
+    for (let i = 0; i < misson.hard.length; i++) {
+        buf = buf + '<div class="misson-container" id="misson-hard-'+i+'">' +
+        '<div class="misson-level hard">困難</div>' +
+        '<div class="misson-describe">'+misson.hard[i].describe+'</div>' +
+        '<div class="misson-progress">'+data.player.misson.hard[i]+'/'+misson.hard[i].amount+'</div>' +
+        '<div class="misson-rewards">';
+        for(let j = 0; j < misson.hard[i].rewards.length; j++) {
+            buf = buf + '<div class="rewards-item" id="item-'+misson.hard[i].rewards[j].name+'">' +
+            '<div class="rewards-amount">'+misson.hard[i].rewards[j].amount+'</div></div>';
+        }
+        buf = buf + '</div></div>';
+    }
+    $("#misson-week>div:nth-child(2)").html(buf);
+
+    buf = '';
+    for (let i = 0; i < misson.medium.length; i++) {
+        buf = buf + '<div class="misson-container" id="misson-medium-'+i+'">' +
+        '<div class="misson-level medium">中等</div>' +
+        '<div class="misson-describe">'+misson.medium[i].describe+'</div>' +
+        '<div class="misson-progress">'+data.player.misson.medium[i]+'/'+misson.medium[i].amount+'</div>' +
+        '<div class="misson-rewards">';
+        for(let j = 0; j < misson.medium[i].rewards.length; j++) {
+            buf = buf + '<div class="rewards-item" id="item-'+misson.medium[i].rewards[j].name+'">' +
+            '<div class="rewards-amount">'+misson.medium[i].rewards[j].amount+'</div></div>';
+        }
+        buf = buf + '</div></div>';
+    }
+    for (let i = 0; i < misson.easy.length; i++) {
+        buf = buf + '<div class="misson-container" id="misson-easy-'+i+'">' +
+        '<div class="misson-level easy">簡單</div>' +
+        '<div class="misson-describe">'+misson.easy[i].describe+'</div>' +
+        '<div class="misson-progress">'+data.player.misson.easy[i]+'/'+misson.easy[i].amount+'</div>' +
+        '<div class="misson-rewards">';
+        for(let j = 0; j < misson.easy[i].rewards.length; j++) {
+            buf = buf + '<div class="rewards-item" id="item-'+misson.easy[i].rewards[j].name+'">' +
+            '<div class="rewards-amount">'+misson.easy[i].rewards[j].amount+'</div></div>';
+        }
+        buf = buf + '</div></div>';
+    }
+    $("#misson-day>div:nth-child(2)").html(buf);
 }

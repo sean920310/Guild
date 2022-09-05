@@ -978,11 +978,11 @@ body {
     border: 1px solid white;
 }
 
-#misson-day{
+#misson-week{
     margin-top: 40px;
 }
 
-#misson-week{
+#misson-day{
     margin-top: 20px;
 }
 
@@ -1037,6 +1037,45 @@ body {
     top: 50px;
     left: 0px;
     font-size: 14px;
+    text-align: center;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+}
+
+.misson-rewards{
+    display: flex;
+    position: absolute;
+    bottom: 0px;
+    overflow-x: auto;
+    width: inherit;
+    padding-bottom: 5px;
+}
+
+.misson-rewards::-webkit-scrollbar {
+    height: 5px;
+}
+
+.rewards-item{
+    position: relative;
+    width: 40px;
+    height: 40px;
+    margin: 0px 5px;
+    flex-shrink: 0;
+    border: 1px solid white;
+    border-radius: 5px;
+    background-image: url("./asset/img/item.png");
+    background-size: contain;
+}
+
+.rewards-amount{
+    position: absolute;
+    bottom: 0px;
+    right: 2px;
+    font-size: 10px;
+}
+
+.rewards-amount::before{
+    content: "x";
 }
 
 /* ------------------search------------------ */
