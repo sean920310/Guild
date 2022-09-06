@@ -1,2 +1,2 @@
-local misson = Config.misson
+local mission = Config.mission
 
