@@ -42,7 +42,7 @@ Config.shopItem = {
     }
 }
 
-Config.misson = {
+Config.mission = {
     easy = {
         {
             type = "hand_in",

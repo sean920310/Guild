@@ -19,7 +19,7 @@ CREATE TABLE `guild_player` (
 	`name` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_bin',
 	`guild` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_bin',
 	`shop` LONGTEXT NULL DEFAULT '{"green_material":0,"blue_material":0,"purple_material":0,"gold_material":0,"red_material":0}' COLLATE 'utf8mb4_bin',
-	`misson` LONGTEXT NULL DEFAULT '{"hard":[],"medium":[],"easy":[]}' COLLATE 'utf8mb4_bin',
+	`mission` LONGTEXT NULL DEFAULT '{"hard":[],"medium":[],"easy":[]}' COLLATE 'utf8mb4_bin',
 	`point` INT(11) NULL DEFAULT '0',
 	`grade` INT(11) NULL DEFAULT '0',
 	PRIMARY KEY (`identifier`) USING BTREE

@@ -956,9 +956,9 @@ body {
     left: 0px;
 }
 
-/* ------------------misson------------------ */
+/* ------------------mission------------------ */
 
-#misson{
+#mission{
     position: relative;
     height: 500px;
     margin: 10px;
@@ -970,24 +970,24 @@ body {
     box-shadow: inset 0px 10px 15px -5px rgba(255, 255, 255, .4);
 }
 
-#misson-day,
-#misson-week{
+#mission-day,
+#mission-week{
     height: 210px;
     padding: 0px 20px;
     background-color: inherit;
     border: 1px solid white;
 }
 
-#misson-week{
+#mission-week{
     margin-top: 40px;
 }
 
-#misson-day{
+#mission-day{
     margin-top: 20px;
 }
 
-#misson-day>div:first-child,
-#misson-week>div:first-child{
+#mission-day>div:first-child,
+#mission-week>div:first-child{
     position: relative;
     top: -10px;
     left: 20px;
@@ -996,15 +996,15 @@ body {
     background-color: inherit;
 }
 
-#misson-day>div:nth-child(2),
-#misson-week>div:nth-child(2){
+#mission-day>div:nth-child(2),
+#mission-week>div:nth-child(2){
     display: flex;
     height: 177px;
     width: 704px;
     overflow: auto;
 }
 
-.misson-container{
+.mission-container{
     position: relative;
     flex-shrink: 0;
     margin-right: 20px;
@@ -1014,25 +1014,25 @@ body {
     border-radius: 5px;
 }
 
-.misson-level{
+.mission-level{
     position: absolute;
     right: 10px;
     font-size: 30px;
 }
 
-.misson-describe{
+.mission-describe{
     position: relative;
     top: 50px;
     left: 0px;
     font-size: 14px;
 }
 
-.misson-describe::before{
+.mission-describe::before{
     content: "※";
     color: darkgoldenrod;
 }
 
-.misson-progress{
+.mission-progress{
     position: relative;
     top: 50px;
     left: 0px;
@@ -1042,7 +1042,7 @@ body {
     border-bottom: 1px solid gray;
 }
 
-.misson-rewards{
+.mission-rewards{
     display: flex;
     position: absolute;
     bottom: 0px;
@@ -1051,7 +1051,7 @@ body {
     padding-bottom: 5px;
 }
 
-.misson-rewards::-webkit-scrollbar {
+.mission-rewards::-webkit-scrollbar {
     height: 5px;
 }
 

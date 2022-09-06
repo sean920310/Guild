@@ -1,0 +1,2 @@
+local misson = Config.misson
+

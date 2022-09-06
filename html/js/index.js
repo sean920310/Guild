@@ -50,7 +50,7 @@ let gradePermission = [
 ]
 let upgradeCost = {};
 let shopItem = {};
-let misson = {};
+let mission = {};
 
 //============================================================
 
@@ -82,7 +82,7 @@ $(function(){
         if(item.type === "init"){
             upgradeCost = item.config.upgradeCost;
             shopItem = item.config.shopItem;
-            misson = item.config.misson
+            mission = item.config.mission
         }
         else if (item.type === "open") {
             display(true);
@@ -108,8 +108,8 @@ $(function(){
                 //shop
                 setupShop();
 
-                //misson
-                setupMisson();
+                //mission
+                setupmission();
 
                 hasGuild = true;
             }
@@ -693,47 +693,47 @@ function setupShop(){
     }
 }
 
-function setupMisson(){
-    $(".misson-container").remove();
+function setupmission(){
+    $(".mission-container").remove();
     let buf = '';
-    for (let i = 0; i < misson.hard.length; i++) {
-        buf = buf + '<div class="misson-container" id="misson-hard-'+i+'">' +
-        '<div class="misson-level hard">困難</div>' +
-        '<div class="misson-describe">'+misson.hard[i].describe+'</div>' +
-        '<div class="misson-progress">'+data.player.misson.hard[i]+'/'+misson.hard[i].amount+'</div>' +
-        '<div class="misson-rewards">';
-        for(let j = 0; j < misson.hard[i].rewards.length; j++) {
-            buf = buf + '<div class="rewards-item" id="item-'+misson.hard[i].rewards[j].name+'">' +
-            '<div class="rewards-amount">'+misson.hard[i].rewards[j].amount+'</div></div>';
+    for (let i = 0; i < mission.hard.length; i++) {
+        buf = buf + '<div class="mission-container" id="mission-hard-'+i+'">' +
+        '<div class="mission-level hard">困難</div>' +
+        '<div class="mission-describe">'+mission.hard[i].describe+'</div>' +
+        '<div class="mission-progress">'+data.player.mission.hard[i]+'/'+mission.hard[i].amount+'</div>' +
+        '<div class="mission-rewards">';
+        for(let j = 0; j < mission.hard[i].rewards.length; j++) {
+            buf = buf + '<div class="rewards-item" id="item-'+mission.hard[i].rewards[j].name+'">' +
+            '<div class="rewards-amount">'+mission.hard[i].rewards[j].amount+'</div></div>';
         }
         buf = buf + '</div></div>';
     }
-    $("#misson-week>div:nth-child(2)").html(buf);
+    $("#mission-week>div:nth-child(2)").html(buf);
 
     buf = '';
-    for (let i = 0; i < misson.medium.length; i++) {
-        buf = buf + '<div class="misson-container" id="misson-medium-'+i+'">' +
-        '<div class="misson-level medium">中等</div>' +
-        '<div class="misson-describe">'+misson.medium[i].describe+'</div>' +
-        '<div class="misson-progress">'+data.player.misson.medium[i]+'/'+misson.medium[i].amount+'</div>' +
-        '<div class="misson-rewards">';
-        for(let j = 0; j < misson.medium[i].rewards.length; j++) {
-            buf = buf + '<div class="rewards-item" id="item-'+misson.medium[i].rewards[j].name+'">' +
-            '<div class="rewards-amount">'+misson.medium[i].rewards[j].amount+'</div></div>';
+    for (let i = 0; i < mission.medium.length; i++) {
+        buf = buf + '<div class="mission-container" id="mission-medium-'+i+'">' +
+        '<div class="mission-level medium">中等</div>' +
+        '<div class="mission-describe">'+mission.medium[i].describe+'</div>' +
+        '<div class="mission-progress">'+data.player.mission.medium[i]+'/'+mission.medium[i].amount+'</div>' +
+        '<div class="mission-rewards">';
+        for(let j = 0; j < mission.medium[i].rewards.length; j++) {
+            buf = buf + '<div class="rewards-item" id="item-'+mission.medium[i].rewards[j].name+'">' +
+            '<div class="rewards-amount">'+mission.medium[i].rewards[j].amount+'</div></div>';
         }
         buf = buf + '</div></div>';
     }
-    for (let i = 0; i < misson.easy.length; i++) {
-        buf = buf + '<div class="misson-container" id="misson-easy-'+i+'">' +
-        '<div class="misson-level easy">簡單</div>' +
-        '<div class="misson-describe">'+misson.easy[i].describe+'</div>' +
-        '<div class="misson-progress">'+data.player.misson.easy[i]+'/'+misson.easy[i].amount+'</div>' +
-        '<div class="misson-rewards">';
-        for(let j = 0; j < misson.easy[i].rewards.length; j++) {
-            buf = buf + '<div class="rewards-item" id="item-'+misson.easy[i].rewards[j].name+'">' +
-            '<div class="rewards-amount">'+misson.easy[i].rewards[j].amount+'</div></div>';
+    for (let i = 0; i < mission.easy.length; i++) {
+        buf = buf + '<div class="mission-container" id="mission-easy-'+i+'">' +
+        '<div class="mission-level easy">簡單</div>' +
+        '<div class="mission-describe">'+mission.easy[i].describe+'</div>' +
+        '<div class="mission-progress">'+data.player.mission.easy[i]+'/'+mission.easy[i].amount+'</div>' +
+        '<div class="mission-rewards">';
+        for(let j = 0; j < mission.easy[i].rewards.length; j++) {
+            buf = buf + '<div class="rewards-item" id="item-'+mission.easy[i].rewards[j].name+'">' +
+            '<div class="rewards-amount">'+mission.easy[i].rewards[j].amount+'</div></div>';
         }
         buf = buf + '</div></div>';
     }
-    $("#misson-day>div:nth-child(2)").html(buf);
+    $("#mission-day>div:nth-child(2)").html(buf);
 }
