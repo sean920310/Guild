@@ -395,6 +395,20 @@ $(function(){
         }));
     });
 
+    //mission handin
+    $("#mission").on("click",".mission-handin", function(){
+        let temp = $(this).parent().attr("id");
+        temp = temp.substring(8);
+        let missionLevel = temp.substring(0,temp.indexOf('-'));
+        let missionIndex = Number(temp.substring(temp.indexOf('-')+1));
+        missionIndex+=1;
+        
+        $.post('https://Guild/missionHandin', JSON.stringify({
+            level : missionLevel,
+            index : missionIndex
+        }));
+    });
+
     //search
     $("#search-button").click(function(){
         let input = $("#search-input").val();
@@ -725,6 +739,7 @@ function setupmission(){
     }
     for (let i = 0; i < mission.easy.length; i++) {
         buf = buf + '<div class="mission-container" id="mission-easy-'+i+'">' +
+        '<div class="mission-handin">繳交</div>' + 
         '<div class="mission-level easy">簡單</div>' +
         '<div class="mission-describe">'+mission.easy[i].describe+'</div>' +
         '<div class="mission-progress">'+data.player.mission.easy[i]+'/'+mission.easy[i].amount+'</div>' +
@@ -736,4 +751,5 @@ function setupmission(){
         buf = buf + '</div></div>';
     }
     $("#mission-day>div:nth-child(2)").html(buf);
+
 }

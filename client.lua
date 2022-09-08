@@ -198,6 +198,21 @@ function Guild:shop(item)
     end,item)
 end
 
+function Guild:missionHandin(level,index)
+    ESX.TriggerServerCallback("Guild:missionHandin", function(error) 
+        if error then
+            chat(error,{255,0,0})
+
+            if Config.debug then
+                print(error)
+            end
+        else
+            TriggerServerEvent("Guild:server:onChange")
+            TriggerEvent("Guild:client:onChange")
+        end
+    end,level,index)
+end
+
 function Guild:initNUI()
     SendNUIMessage({
         type = 'init',
@@ -289,6 +304,10 @@ end)
 
 RegisterNUICallback("shop", function(data)
     Guild:shop(data.item)
+end)
+
+RegisterNUICallback("missionHandin", function(data)
+    Guild:missionHandin(data.level,data.index)
 end)
 
 --------------------------------------------------------------------------------------

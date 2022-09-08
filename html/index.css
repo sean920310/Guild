@@ -1014,6 +1014,20 @@ body {
     border-radius: 5px;
 }
 
+.mission-handin{
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    padding: 0px 5px;
+}
+
+.mission-handin:hover{
+    background-color: gray;
+    border: 0px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 .mission-level{
     position: absolute;
     right: 10px;

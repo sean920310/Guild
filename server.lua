@@ -613,8 +613,57 @@ function Guild:shop(source,item)
     return "Couldn't find the guild "..name
 end
 
-function Guild:mission(source,mission)
-    
+function Guild:missionHandin(source,level,index)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local name = xPlayer.get("guild")
+    local identifier = xPlayer.getIdentifier()
+
+    if not name then
+        return "Is not in any guild" 
+    end
+
+    local guild = self.list[match[name]]
+    if guild then
+        local itemName = Config.mission[level][index].item
+        local itemCount = Config.mission[level][index].amount
+        if itemName == "money" then
+            local playerMoney = xPlayer.getMoney()
+            if playerMoney >= itemCount then
+                xPlayer.removeMoney(itemCount)
+                return self:missionGetReward(source,level,index)
+            else
+                return "You don't have enough "..itemName
+            end
+        else
+            local item = xPlayer.getInventoryItem(itemName)
+            if item.count >= itemCount then
+                xPlayer.removeInventoryItem(itemName,itemCount)
+                return self:missionGetReward(source,level,index)
+            else
+                return "You don't have enough "..itemName
+            end
+        end
+
+    end
+
+    return "Couldn't find the guild "..name
+end
+
+function Guild:missionGetReward(source,level,index)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local identifier = xPlayer.getIdentifier()
+
+    for i, v in ipairs(Config.mission[level][index].rewards) do
+        if v.name == "xp" then
+            exports.xperience.addXP(source,source, v.amount)
+        elseif v.name == "money" then
+            xPlayer.addMoney(v.amount)
+        else
+            xPlayer.addInventoryItem(v.name, v.amount)  
+        end
+    end
+
+    return false
 end
 
 --------------------------------------------------------------------------------------
@@ -657,6 +706,10 @@ end)
 
 ESX.RegisterServerCallback("Guild:shop",function(source,cb,item)
     cb(Guild:shop(source,item))
+end)
+
+ESX.RegisterServerCallback("Guild:missionHandin",function(source,cb,level,index)
+    cb(Guild:missionHandin(source,level,index))
 end)
 
 ESX.RegisterServerCallback("Guild:load",function(source,cb)
