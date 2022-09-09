@@ -397,16 +397,18 @@ $(function(){
 
     //mission handin
     $("#mission").on("click",".mission-handin", function(){
-        let temp = $(this).parent().attr("id");
-        temp = temp.substring(8);
-        let missionLevel = temp.substring(0,temp.indexOf('-'));
-        let missionIndex = Number(temp.substring(temp.indexOf('-')+1));
-        missionIndex+=1;
-        
-        $.post('https://Guild/missionHandin', JSON.stringify({
-            level : missionLevel,
-            index : missionIndex
-        }));
+        if(!($(this).attr('disabled'))){
+            let temp = $(this).parent().attr("id");
+            temp = temp.substring(8);
+            let missionLevel = temp.substring(0,temp.indexOf('-'));
+            let missionIndex = Number(temp.substring(temp.indexOf('-')+1));
+            missionIndex+=1;
+    
+            $.post('https://Guild/missionHandin', JSON.stringify({
+                level : missionLevel,
+                index : missionIndex
+            }));
+        }
     });
 
     //search
@@ -752,4 +754,12 @@ function setupmission(){
     }
     $("#mission-day>div:nth-child(2)").html(buf);
 
+    for (const key in mission) {
+        for (let i = 0; i < mission[key].length; i++) {
+            if(data.player.mission[key][i] >= mission[key][i].amount){
+                $('#mission-'+key+'-'+i+">.mission-handin").attr("disabled",true);
+                $('#mission-'+key+'-'+i+">.mission-handin").text("");
+            }
+        }
+    }
 }

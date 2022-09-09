@@ -55,6 +55,25 @@ function Guild:init(debug)
     MySQL.Async.fetchAll('SELECT * FROM `guild_player`',{}, function(collect)
         if collect[1] then
             for i=1, #collect do
+                collect[i].shop = json.decode(collect[i].shop)
+                local tempMission = json.decode(collect[i].mission)
+                if #tempMission.hard == 0 then
+
+                    for i = 1, #Config.mission.hard do
+                        table.insert(tempMission.hard,#tempMission.hard+1,0)
+                    end
+                end
+                if #tempMission.medium == 0 then
+                    for i = 1, #Config.mission.medium do
+                        table.insert(tempMission.medium,#tempMission.medium+1,0)
+                    end 
+                end
+                if #tempMission.easy == 0 then
+                    for i = 1, #Config.mission.easy do
+                        table.insert(tempMission.easy,#tempMission.easy+1,0)
+                    end 
+                end
+                collect[i].mission = tempMission
                 local sync = false
                 MySQL.Async.fetchAll('SELECT `job`,`rank` FROM `users` WHERE `identifier`=@identifier;', {['@identifier'] = collect[i].identifier}, function(user)
                     if user[1] then
@@ -138,17 +157,17 @@ function Guild:load(source)
             end
             data.player.shop = json.decode(data.player.shop)
             data.player.mission = json.decode(data.player.mission)
-            if #data.player.mission.hard then
+            if #data.player.mission.hard == 0 then
                 for i = 1, #Config.mission.hard do
                     table.insert(data.player.mission.hard,#data.player.mission.hard+1,0)
                 end
             end
-            if #data.player.mission.medium then
+            if #data.player.mission.medium == 0 then
                 for i = 1, #Config.mission.medium do
                     table.insert(data.player.mission.medium,#data.player.mission.medium+1,0)
                 end 
             end
-            if #data.player.mission.easy then
+            if #data.player.mission.easy == 0 then
                 for i = 1, #Config.mission.easy do
                     table.insert(data.player.mission.easy,#data.player.mission.easy+1,0)
                 end 
@@ -630,6 +649,12 @@ function Guild:missionHandin(source,level,index)
             local playerMoney = xPlayer.getMoney()
             if playerMoney >= itemCount then
                 xPlayer.removeMoney(itemCount)
+                for i = 1, #guild.member do
+                    if guild.member[i].identifier == identifier then
+                        guild.member[i].mission[level][index] = itemCount
+                        MySQL.Async.execute('UPDATE `guild_player` SET `mission`= @mission WHERE identifier = @identifier', {["@identifier"] = identifier, ["@mission"] = json.encode(guild.member[i].mission)}, nil)
+                    end
+                end
                 return self:missionGetReward(source,level,index)
             else
                 return "You don't have enough "..itemName
@@ -638,6 +663,12 @@ function Guild:missionHandin(source,level,index)
             local item = xPlayer.getInventoryItem(itemName)
             if item.count >= itemCount then
                 xPlayer.removeInventoryItem(itemName,itemCount)
+                for i = 1, #guild.member do
+                    if guild.member[i].identifier == identifier then
+                        guild.member[i].mission[level][index] = itemCount
+                        MySQL.Async.execute('UPDATE `guild_player` SET `mission`= @mission WHERE identifier = @identifier', {["@identifier"] = identifier, ["@mission"] = json.encode(guild.member[i].mission)}, nil)
+                    end
+                end
                 return self:missionGetReward(source,level,index)
             else
                 return "You don't have enough "..itemName

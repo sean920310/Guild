@@ -1028,6 +1028,10 @@ body {
     cursor: pointer;
 }
 
+.mission-handin:active{
+    top: 12px;
+}
+
 .mission-level{
     position: absolute;
     right: 10px;
