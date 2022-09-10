@@ -52,11 +52,18 @@ Config.mission = {
             rewards = {
                 {
                     name = "money",
+                    label = "金幣",
                     amount = 1000
                 },
                 {
                     name = "xp",
+                    label = "XP",
                     amount = 500
+                },
+                {
+                    name = "point",
+                    label = "貢獻",
+                    amount = 200
                 }
             }
         },
@@ -68,11 +75,18 @@ Config.mission = {
             rewards = {
                 {
                     name = "money",
+                    label = "金幣",
                     amount = 1000
                 },
                 {
                     name = "xp",
+                    label = "XP",
                     amount = 500
+                },
+                {
+                    name = "point",
+                    label = "貢獻",
+                    amount = 200
                 }
             }
         }
@@ -86,11 +100,18 @@ Config.mission = {
             rewards = {
                 {
                     name = "money",
+                    label = "金幣",
                     amount = 1500
                 },
                 {
                     name = "xp",
+                    label = "XP",
                     amount = 1000
+                },
+                {
+                    name = "point",
+                    label = "貢獻",
+                    amount = 400
                 }
             }
         },
@@ -102,11 +123,18 @@ Config.mission = {
             rewards = {
                 {
                     name = "money",
+                    label = "金幣",
                     amount = 1500
                 },
                 {
                     name = "xp",
+                    label = "XP",
                     amount = 1000
+                },
+                {
+                    name = "point",
+                    label = "貢獻",
+                    amount = 400
                 }
             }
         }
@@ -120,11 +148,18 @@ Config.mission = {
             rewards = {
                 {
                     name = "money",
+                    label = "金幣",
                     amount = 2000
                 },
                 {
                     name = "xp",
+                    label = "XP",
                     amount = 1500
+                },
+                {
+                    name = "point",
+                    label = "貢獻",
+                    amount = 600
                 }
             }
         },
@@ -136,11 +171,18 @@ Config.mission = {
             rewards = {
                 {
                     name = "money",
+                    label = "金幣",
                     amount = 2000
                 },
                 {
                     name = "xp",
+                    label = "XP",
                     amount = 1500
+                },
+                {
+                    name = "point",
+                    label = "貢獻",
+                    amount = 600
                 }
             }
         }

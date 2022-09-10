@@ -467,6 +467,7 @@ $(function(){
 
 function setupInformation(guild,selfGuild){
     $("#information-name").text(guild.name);
+    $("#information-level").text('Lv.'+guild.level);
     $("#information-point").text(Number(guild.point).toLocaleString('en'));
     $("#information-players").text(String(guild.players) + '/' + String(Math.floor((guild.level-1)/3)*5 + 20));
     $("#information-chairman").text(guild.chairman);
@@ -720,7 +721,8 @@ function setupmission(){
         '<div class="mission-rewards">';
         for(let j = 0; j < mission.hard[i].rewards.length; j++) {
             buf = buf + '<div class="rewards-item" id="item-'+mission.hard[i].rewards[j].name+'">' +
-            '<div class="rewards-amount">'+mission.hard[i].rewards[j].amount+'</div></div>';
+            '<div class="rewards-amount">'+mission.hard[i].rewards[j].amount+'</div>'+
+            '<div class="tip">'+mission.hard[i].rewards[j].label+'</div></div>';
         }
         buf = buf + '</div></div>';
     }
@@ -735,7 +737,8 @@ function setupmission(){
         '<div class="mission-rewards">';
         for(let j = 0; j < mission.medium[i].rewards.length; j++) {
             buf = buf + '<div class="rewards-item" id="item-'+mission.medium[i].rewards[j].name+'">' +
-            '<div class="rewards-amount">'+mission.medium[i].rewards[j].amount+'</div></div>';
+            '<div class="rewards-amount">'+mission.medium[i].rewards[j].amount+'</div>'+
+            '<div class="tip">'+mission.medium[i].rewards[j].label+'</div></div>';
         }
         buf = buf + '</div></div>';
     }
@@ -748,7 +751,8 @@ function setupmission(){
         '<div class="mission-rewards">';
         for(let j = 0; j < mission.easy[i].rewards.length; j++) {
             buf = buf + '<div class="rewards-item" id="item-'+mission.easy[i].rewards[j].name+'">' +
-            '<div class="rewards-amount">'+mission.easy[i].rewards[j].amount+'</div></div>';
+            '<div class="rewards-amount">'+mission.easy[i].rewards[j].amount+'</div>'+
+            '<div class="tip">'+mission.easy[i].rewards[j].label+'</div></div>';
         }
         buf = buf + '</div></div>';
     }

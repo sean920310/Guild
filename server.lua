@@ -682,15 +682,32 @@ end
 
 function Guild:missionGetReward(source,level,index)
     local xPlayer = ESX.GetPlayerFromId(source)
+    local name = xPlayer.get("guild")
     local identifier = xPlayer.getIdentifier()
 
-    for i, v in ipairs(Config.mission[level][index].rewards) do
-        if v.name == "xp" then
-            exports.xperience.addXP(source,source, v.amount)
-        elseif v.name == "money" then
-            xPlayer.addMoney(v.amount)
-        else
-            xPlayer.addInventoryItem(v.name, v.amount)  
+    if not name then
+        return "Is not in any guild" 
+    end
+
+    local guild = self.list[match[name]]
+    if guild then
+        for i, v in ipairs(Config.mission[level][index].rewards) do
+            if v.name == "xp" then
+                exports.xperience.addXP(source,source, v.amount)
+            elseif v.name == "money" then
+                xPlayer.addMoney(v.amount)
+            elseif v.name == "point" then
+                for i = 1, #guild.member do
+                    if guild.member[i].identifier == identifier then
+                        guild.member[i].point = guild.member[i].point + v.amount
+                        guild.point = guild.point + v.amount
+                        MySQL.Async.execute('UPDATE `guild_player` SET `point`= @point WHERE identifier = @identifier', {["@identifier"] = identifier, ["@point"] = guild.member[i].point}, nil)
+                        MySQL.Async.execute('UPDATE `guild_list` SET `point`= @point WHERE `name` = @name', {["@name"] = name, ["@point"] = guild.point}, nil)
+                    end
+                end
+            else
+                xPlayer.addInventoryItem(v.name, v.amount)  
+            end
         end
     end
 
@@ -771,12 +788,37 @@ CreateThread(function()
         Wait(500)
         if tonumber(os.date("%H",os.time())) == 0 and tonumber(os.date("%M",os.time())) == 0 and tonumber(os.date("%S",os.time())) == 0 then
             --midnight
-            MySQL.Async.execute('UPDATE `guild_player` SET `shop`= DEFAULT', {}, nil)
+            ----shop reset
+            MySQL.Sync.execute('UPDATE `guild_player` SET `shop`= DEFAULT', {}, nil)
+            ----mission reset
+            local Sync = false
+            MySQL.Async.fetchAll('SELECT `identifier`,`mission` FROM `guild_player`', {}, function(collect)
+                if collect[1] then
+                    for i=1, #collect do
+                        local tempMission = collect[i].mission
+                        tempMission = json.decode(tempMission)
+                        for j, v in ipairs(tempMission.easy) do
+                            tempMission.easy[j] = 0
+                        end
+                        for j, v in ipairs(tempMission.medium) do
+                            tempMission.medium[j] = 0
+                        end
+                        MySQL.Sync.execute('UPDATE `guild_player` SET `mission`= @mission WHERE identifier = @identifier', {["@identifier"] = collect[i].identifier, ['@mission']=json.encode(tempMission)}, nil)
+                    end
+                end
+                Sync = true
+            end)
+
+            while not Sync do
+                print("wait")
+                Wait(1)
+            end
             
             if tonumber(os.date("%d",os.time())) == 0 then
                 --a month
-                MySQL.Async.execute('UPDATE `guild_player` SET `mission`= DEFAULT', {}, nil)
+                MySQL.Sync.execute('UPDATE `guild_player` SET `mission`= DEFAULT', {}, nil)
             end
+
             TriggerEvent("Guild:server:onChange")
         end
     end
