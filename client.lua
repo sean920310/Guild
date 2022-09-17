@@ -30,6 +30,7 @@ function Guild:load()
     while not loaded do
         Wait(5)
     end
+    TriggerEvent("Guild:mission:init",self.data.player)
 end
 
 function Guild:new(name,comment)
@@ -312,6 +313,12 @@ end)
 
 --------------------------------------------------------------------------------------
 
+RegisterNetEvent("Guild:client:missionGetReward")
+AddEventHandler("Guild:client:missionGetReward", function()
+    Notify("~g~你已完成任務~w~")
+    PlaySoundFrontend(-1, "OTHER_TEXT", "HUD_AWARDS")
+end)
+
 RegisterNetEvent("Guild:client:onChange")
 AddEventHandler("Guild:client:onChange", function()
     Guild:load()
@@ -382,4 +389,10 @@ function chat(str, color)
             args = {str}
         }
     )
+end
+
+function Notify(text) -- 左下角通知
+    SetNotificationTextEntry('STRING')
+    AddTextComponentString(text)
+    DrawNotification(false, false)
 end

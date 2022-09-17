@@ -717,7 +717,7 @@ function setupmission(){
         buf = buf + '<div class="mission-container" id="mission-hard-'+i+'">' +
         '<div class="mission-level hard">困難</div>' +
         '<div class="mission-describe">'+mission.hard[i].describe+'</div>' +
-        '<div class="mission-progress">'+data.player.mission.hard[i]+'/'+mission.hard[i].amount+'</div>' +
+        '<div class="mission-progress"><div class="mission-progressBar"></div>'+data.player.mission.hard[i]+'/'+mission.hard[i].amount+'</div>' +
         '<div class="mission-rewards">';
         for(let j = 0; j < mission.hard[i].rewards.length; j++) {
             buf = buf + '<div class="rewards-item" id="item-'+mission.hard[i].rewards[j].name+'">' +
@@ -733,7 +733,7 @@ function setupmission(){
         buf = buf + '<div class="mission-container" id="mission-medium-'+i+'">' +
         '<div class="mission-level medium">中等</div>' +
         '<div class="mission-describe">'+mission.medium[i].describe+'</div>' +
-        '<div class="mission-progress">'+data.player.mission.medium[i]+'/'+mission.medium[i].amount+'</div>' +
+        '<div class="mission-progress"><div class="mission-progressBar"></div>'+data.player.mission.medium[i]+'/'+mission.medium[i].amount+'</div>' +
         '<div class="mission-rewards">';
         for(let j = 0; j < mission.medium[i].rewards.length; j++) {
             buf = buf + '<div class="rewards-item" id="item-'+mission.medium[i].rewards[j].name+'">' +
@@ -747,7 +747,7 @@ function setupmission(){
         '<div class="mission-handin">繳交</div>' + 
         '<div class="mission-level easy">簡單</div>' +
         '<div class="mission-describe">'+mission.easy[i].describe+'</div>' +
-        '<div class="mission-progress">'+data.player.mission.easy[i]+'/'+mission.easy[i].amount+'</div>' +
+        '<div class="mission-progress"><div class="mission-progressBar"></div>'+data.player.mission.easy[i]+'/'+mission.easy[i].amount+'</div>' +
         '<div class="mission-rewards">';
         for(let j = 0; j < mission.easy[i].rewards.length; j++) {
             buf = buf + '<div class="rewards-item" id="item-'+mission.easy[i].rewards[j].name+'">' +
@@ -764,6 +764,13 @@ function setupmission(){
                 $('#mission-'+key+'-'+i+">.mission-handin").attr("disabled",true);
                 $('#mission-'+key+'-'+i+">.mission-handin").text("");
             }
+        }
+    }
+
+    for(const key in mission){
+        for (let i = 0; i < mission[key].length; i++) {
+            let percent = Math.floor(data.player.mission[key][i] / mission[key][i].amount*100);
+            $('#mission-'+key+'-'+i+">.mission-progress>.mission-progressBar").width(String(percent)+"%");
         }
     }
 }

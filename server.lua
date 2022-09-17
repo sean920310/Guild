@@ -632,6 +632,36 @@ function Guild:shop(source,item)
     return "Couldn't find the guild "..name
 end
 
+function Guild:missionUpdate(source,level,index,data)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local name = xPlayer.get("guild")
+    local identifier = xPlayer.getIdentifier()
+
+    if not name then
+        return "Is not in any guild" 
+    end
+
+    local guild = self.list[match[name]]
+    if guild then
+        local targetAmount = Config.mission[level][index].amount
+        if data >= targetAmount then
+            data = targetAmount
+        end
+        for i = 1, #guild.member do
+            if guild.member[i].identifier == identifier then
+                guild.member[i].mission[level][index] = data
+                MySQL.Async.execute('UPDATE `guild_player` SET `mission`= @mission WHERE identifier = @identifier', {["@identifier"] = identifier, ["@mission"] = json.encode(guild.member[i].mission)}, nil)
+            end
+        end
+        if data >= targetAmount then
+            return self:missionGetReward(source,level,index)
+        end
+        return false;
+    end
+
+    return "Couldn't find the guild "..name
+end
+
 function Guild:missionHandin(source,level,index)
     local xPlayer = ESX.GetPlayerFromId(source)
     local name = xPlayer.get("guild")
@@ -674,7 +704,6 @@ function Guild:missionHandin(source,level,index)
                 return "You don't have enough "..itemName
             end
         end
-
     end
 
     return "Couldn't find the guild "..name
@@ -691,6 +720,7 @@ function Guild:missionGetReward(source,level,index)
 
     local guild = self.list[match[name]]
     if guild then
+        TriggerClientEvent("Guild:client:missionGetReward",source)
         for i, v in ipairs(Config.mission[level][index].rewards) do
             if v.name == "xp" then
                 exports.xperience.addXP(source,source, v.amount)
@@ -775,6 +805,12 @@ RegisterNetEvent("Guild:server:onChange")
 AddEventHandler("Guild:server:onChange",function ()
     Guild:init(false) 
     TriggerClientEvent("Guild:client:onChange", -1)
+end)
+
+RegisterNetEvent("Guild:server:missionUpdate")
+AddEventHandler("Guild:server:missionUpdate",function (level,index,data)
+    Guild:missionUpdate(source,level,index,data)
+    TriggerEvent("Guild:server:onChange")
 end)
 
 --------------------------------------------------------------------------------------
